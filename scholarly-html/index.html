@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Migration Reporting Tool (MIR)</title>
+  <link rel="stylesheet" href="css/scholarly.min.css">
+  <script src="js/scholarly.min.js"></script>
+</head>
+
+<body prefix="schema: http://schema.org">
+  <header>
+    <div class="banner">
+    </div>
+    <h1>Migration Reporting Tool</h1>
+    <h2>Technical Report</h2>
+  </header>
+  <!--
+      XXX
+      - check refs
+      - the math example has too much maths
+      - bring back some of the old style
+      - make semantics, validation, processing sub-sections of each structural element
+      - have a section before that for general constructs
+        - explain why use RDFa
+        - explain our patterns: RDFa, roles
+      - figure captions need to get set throughout
+      - dedication? see doc-dedication
+      - syntactic constraints (prefix)
+      - needs more sthenurines
+      - examples of everything
+      - some notes on using Semantic CSS
+      - needs more RDFa in the spec itself
+    -->
+  <div role="contentinfo">
+    <dl>
+      <dt>Authors</dt>
+      <dd>
+        Octavian Ungureanu
+        &amp;
+        Ioana Maniga
+      </dd>
+    </dl>
+  </div>
+  <section typeof="sa:Abstract" id="abstract" role="doc-abstract">
+    <h2>Abstract</h2>
+    <p>
+      This is a technical report which presents information about the APIs that are goiung to serve the MIR
+      application
+      and about the structures of data that we use.
+    </p>
+  </section>
+  <section id="introduction" role="doc-introduction">
+    <!-- review? -->
+    <h2>Introduction</h2>
+    <p>
+      Migration Reporting Tool is a <b>Web system</b> that is capable to generate in real-time an interactive map
+      regarding the migrations performed by humans or birds in a specific context. The application will also deliver
+      useful statistics and visualizations about the migratory habits of specific species and all this information
+      will
+      be offered by a <b>SPARQL endpoint</b> (also enhanced by additional knowledge provided by DBpedia / Wikidata).
+    </p>
+    <p>
+      This technical report was created with the purpose of explaining how the application can be used by the users, a
+      general description of its structure and components, how the APIs are created and what kind of data we use and
+      where is it from. The information about all these will be gradually added as we progress with the development.
+    </p>
+    <p>
+      Details about development:
+    <ul>
+      <li>For frontend we will use React - a javascript library</li>
+      <li>The backend will be developed using Python with Django framework</li>
+      <li>For the database our choice is MongoDB</li>
+      <li>Data about migration events will be modeled and accessed using RDF, RDF Schema, SPARQL.</li>
+    </ul>
+    </p>
+  </section>
+  <section id="structure">
+    <h2>Structure and Details about the Web system</h2>
+    <section id="overview">
+      <h3>Overview</h3>
+      <p>
+        The applincation will let user select what he wants to search: migration map, visuals and statistics for
+        humans or for birds?
+      </p>
+      <p>
+        Once the user makes a choice, he will be able to visualize data about migrations in two sections: live and
+        history. For the both sections there are some filters that can be applied and also statistics and charts are
+        available for the data requested.
+      </p>
+      <p>
+        The users can also register some data regarding migration events that they know or maybe they were involved
+        in.
+      </p>
+    </section>
+    <section id="components">
+      <h3>Components</h3>
+      <section id="c-01">
+        <h3>MIR Web Site</h3>
+        <h4>UI Interface</h4>
+        <p><b>Note:</b>The followin detials are not necessarily final decisions and might end up different in the final
+          implementation.</p>
+        <p>
+          On the first page that users see, there will be the following components:
+        <ul>
+          <li>A welcome message</li>
+          <li>A dropdown that they can use to select the species for which they want to see migration events</li>
+          <li>A button that will navigate to the page with the map</li>
+          <li>A button that will redirect the users to a page where they can add their own data.</li>
+        </ul>
+        </p>
+        <p>
+          Another page will be the one with the map, with the following features:
+        <ul>
+          <li>There will be two tabs - Live and History</li>
+          <li>On each there will be a map showing details about migration</li>
+          <li>Next to the map there will be filters regarding age o migrants, year of migration, detination, occupation
+            etc</li>
+          <li>There will also be charts and statisticts regarding the data, and those will be updated based on
+            filtering.</li>
+        </ul>
+        </p>
+        <p>
+          The page where user can add data will be composed of:
+        <ul>
+          <li>A form with details that he has to fill</li>
+          <li>A submit button</li>
+        </ul>
+        </p>
+      </section>
+      <section id="c-02">
+        <h3>MIR Rest API</h3>
+        <p>
+          The API provided by the server is used in general for performing GET operations in order to retrieve the
+          data for generating the map and statistics. However, since the user can also add some data about migrations
+          there are also POST operations available. Complete details about these can be found in our OpenAPI
+          specification.
+        </p>
+      </section>
+      <section id="c-02">
+        <h3>MIR Database</h3>
+      </section>
+    </section>
+  </section>
+</body>
+
+</html>
