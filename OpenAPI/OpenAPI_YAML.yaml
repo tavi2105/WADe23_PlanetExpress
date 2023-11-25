@@ -1,0 +1,321 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/tavi2105/MIR_PlanetExpress/1.0.0
+info:
+  version: "1.0.0"
+  title: MIR - Open API - PlanetExpress
+  description: The API for the MIR project
+paths:
+  /migration/humans:
+    get:
+      tags:
+        - Humans
+      description: returns all human migrations records based on filters
+      operationId: getHumansRecords
+      parameters:
+        - in: query
+          name: year
+          schema:
+            format: year
+            type: string
+            minLength: 4
+        - in: query
+          name: Destination Country
+          schema:
+            type: string
+            # format: string
+        - in: query
+          name: Departure Country
+          schema:
+            type: string
+            # format: string
+        - in: query
+          name: Occupation
+          schema:
+            type: string
+            # format: string
+        - in: query
+          name: Age
+          schema:
+            type: integer
+            format: uint32
+      responses:
+        '200':
+          description: All migrations than match the selection
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Migration'
+    post:
+      tags:
+        - Humans
+      operationId: setHumansRecords
+      parameters:
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 4
+        - in: query
+          name: Destination Country
+          required: true
+          schema:
+            type: string
+            # format: string
+        - in: query
+          name: Departure Country
+          required: true
+          schema:
+            type: string
+            # format: string
+        - in: query
+          name: Occupation
+          required: true
+          schema:
+            type: string
+            # format: string
+        - in: query
+          name: Age
+          required: true
+          schema:
+            type: integer
+            format: uint32
+        - in: query
+          name: progress
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+      responses:
+        '200':
+          description: response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    
+  /migration/birds:
+    get:
+      tags:
+        - Birds
+      description: returns all bird migrations records based on filters
+      operationId: getBirdRecords
+      parameters:
+        - in: query
+          name: year
+          schema:
+            format: year
+            type: string
+            minLength: 4
+        - in: query
+          name: Destination Country
+          schema:
+            type: string
+        - in: query
+          name: Departure Country
+          schema:
+            type: string
+      responses:
+        '200':
+          description: All migrations than match the selection
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Migration'
+    post:
+      tags:
+        - Birds
+      operationId: setBirdsRecords
+      parameters:
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 4
+        - in: query
+          name: Destination Country
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: Departure Country
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: progress
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+      responses:
+        '200':
+          description: response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+  /migration/type:
+    get:
+      tags:
+        - MigrationType
+      description: returns all types of migrations
+      operationId: getTypes
+      responses:
+        '200':
+          description: All types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MigrationType'
+                  
+                  
+  /migration/live/humans:
+    get:
+      tags:
+        - MigrationLive
+      description: returns all human migrations records based on filters
+      operationId: getHumansLiveRecords
+      parameters:
+        - in: query
+          name: Destination Country
+          schema:
+            type: string
+        - in: query
+          name: Departure Country
+          schema:
+            type: string
+        - in: query
+          name: Occupation
+          schema:
+            type: string
+        - in: query
+          name: Age
+          schema:
+            type: integer
+            format: uint32
+      responses:
+        '200':
+          description: All migrations than match the selection
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MigrationLive'
+                  
+  /migration/live/birds:
+    get:
+      tags:
+        - MigrationLive
+      description: returns all bird migrations records based on filters
+      operationId: getBirdsLiveRecords
+      parameters:
+        - in: query
+          name: Destination Country
+          schema:
+            type: string
+        - in: query
+          name: Departure Country
+          schema:
+            type: string
+      responses:
+        '200':
+          description: All migrations than match the selection
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MigrationLive'
+                  
+  /migration/filters:
+    get:
+      tags:
+        - FiltersValues
+      description: returns all bird migrations records based on filters
+      operationId: getFiltersValues
+      parameters:
+        - in: query
+          name: Filter
+          schema:
+            type: string
+      responses:
+        '200':
+          description: All migrations than match the selection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Filter'
+                
+components:
+  schemas:
+    Migration:
+      type: object
+      properties:
+        id:
+          type: string
+        departure_country:
+          type: string
+          example: "Albania"
+        destination_country:
+          type: string
+          example: "China"
+        migrators_number:
+          type: integer
+          example: 125
+    MigrationType:
+      type: object
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - humans
+            - birds
+    MigrationLive:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: "Eagle"
+        departure_country:
+          type: string
+          example: "Bulgaria"
+        destination_country:
+          type: string
+          example: "Denmark"
+        progress:
+          type: integer
+          example: 70
+    Filter:
+      type: object
+      properties:
+        values: 
+          type: array
+          items:
+            type: string
+          example: ["Albania", "Denmark", "Ireland", "USA", "Japonia"]
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+          example: everything is ok
