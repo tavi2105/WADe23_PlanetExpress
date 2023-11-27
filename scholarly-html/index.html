@@ -12,6 +12,7 @@
 <body prefix="schema: http://schema.org">
   <header>
     <div class="banner">
+      <img src="world_map.png" width="400" height="50" alt="world-map">
     </div>
     <h1>Migration Reporting Tool</h1>
     <h2>Technical Report</h2>
@@ -140,7 +141,27 @@
       </section>
       <section id="c-02">
         <h3>MIR Database</h3>
+        <p>
+          We store the dataset provided by OECD API in our database. This dataset is based on filters (like years,
+          countries,
+          etc), so our database is stuctured in the same way. In addition, in this database we'll have a another dataset
+          stored,
+          this time for birds migration.
+        </p>
       </section>
+    </section>
+    <section id="external-api">
+      <h3>External API</h3>
+      <p>
+        "The OECD provides access to datasets in the catalogue of OECD databases through a RESTful application
+        programming
+        interface (API) based on the SDMX-JSON standard. This allows a developer to easily call the API using simple
+        RESTful URL
+        programmatically." - API Documentation. So, we'll use this API in order to update our dataset with fresh
+        migration data.
+        We can call this API or just download CSVs form its webpage, to store datasets filtred by age, country, year,
+        occupation, education, etc. This resource contains datasets only for the human migration part.
+      </p>
     </section>
   </section>
 </body>
