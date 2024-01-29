@@ -6,6 +6,10 @@ export const colors = {
     turqoise: '#86C4C8',
     darkGray: '#222222',
     black: '#000000',
-    darkBlue: '#245770',
-    peach: '#FFBF81'
+    darkBlue: '#014661',
+    peach: '#FFBF81',
+    darkGreen: '#07543A',
+    oldBackground: '#D5C8BD',
+    brown: '#634b33',
+    violet: '#8852a3'
 }

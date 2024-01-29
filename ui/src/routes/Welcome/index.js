@@ -38,7 +38,7 @@ const Welcome = () => {
         setMigrationCategory(value);
     };
 
-    const handleMapButtonClick = () => { navigate('/migration') }
+    const handleMapButtonClick = () => { navigate('/migration', { state: { category: migrationCategory } }) }
 
     return (
         <ThemeProvider theme={darkTheme}>
@@ -48,7 +48,7 @@ const Welcome = () => {
                     backgroundPosition: 'center',
                     backgroundSize: 'cover',
                     minWidth: '100vw',
-                    minHeight: '100wh',
+                    minHeight: '100vh',
                     position: 'fixed'
                 }}
 
@@ -77,7 +77,7 @@ const Welcome = () => {
                     </Select>
                     <Button variant="contained"
                         sx={{
-                            width: 200, minWidth: '40em', marginTop: '3em', backgroundColor: colors.red, color: colors.white, "&:hover": {
+                            width: 200, minWidth: '40em', marginTop: '3em', backgroundColor: colors.darkBlue, color: colors.white, "&:hover": {
                                 backgroundColor: colors.darkGray
                             }
                         }}
@@ -86,7 +86,7 @@ const Welcome = () => {
                         View migration map
                     </Button>
                     <Button variant="outlined" sx={{
-                        width: 200, minWidth: '40em', marginTop: '3em', color: colors.red, borderColor: colors.red, "&:hover": {
+                        width: 200, minWidth: '40em', marginTop: '3em', color: colors.white, borderColor: colors.white, "&:hover": {
                             borderColor: colors.white
                         }
                     }}>Add migration event</Button>

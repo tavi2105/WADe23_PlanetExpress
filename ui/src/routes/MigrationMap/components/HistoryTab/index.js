@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
     ComposableMap,
     Geographies,
@@ -10,9 +10,9 @@ import { colors } from '../../../../constants';
 import topojson from '../../../../assets/topo.json'
 
 import SelectField from '../SelectField';
+import { LineChart } from '@mui/x-charts/LineChart';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { Tooltip } from "react-tooltip";
-
+import Legend from './Legend';
 
 
 const markers = [
@@ -22,45 +22,46 @@ const markers = [
     },
 ];
 
+const HistoryTab = () => {
 
-
-const LiveTab = () => {
-    const [tooltipContent, setTooltipContent] = useState('')
+    const [highlighted, setHighlighted] = useState({})
     const [country, setCountry] = useState({
         name: "Romania",
         coordinates: [25.601198, 45.657974]
     })
 
+    const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
+    const uData = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
 
-    const simulation = [[109.47529475294755, 20.197273926357823], [108.65448654486545, 22.50701215076758], [108.6256862568626, 24.36852447986358]]
-    const [place, setPlace] = useState(0)
+    const xLabels = [
+        'Page A',
+        'Page B',
+        'Page C',
+        'Page D',
+        'Page E',
+        'Page F',
+        'Page G',
+    ];
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (place < 2) {
-                setPlace(place + 1)
-            }
-            else {
-                setPlace(0)
-            }
-        }, 3000);
+    console.log(highlighted)
 
-        return () => clearInterval(interval);
-    }, []);
+    const handleClick = (geo) => {
+        console.log(geo)
+        setHighlighted(geo)
 
-    console.log(tooltipContent)
-
+    };
     const handleCountryChange = (event) => {
         const {
             target: { value },
         } = event;
         setCountry(value);
     };
+    console.log("dest", highlighted)
     return (
         <div >
-            <span style={{ fontSize: 18 }}>Hover on marker to see details about ongoin migration event</span>
+            <span style={{ fontSize: 18 }}>{highlighted.properties?.name ? `Country: ${highlighted.properties?.name}` : 'Click on a country for details.'}</span>
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                <Tooltip id="my-tooltip">{tooltipContent}</Tooltip>
+
                 <ComposableMap
                     projectionConfig={{
                         rotate: [0, 0, 0],
@@ -80,11 +81,18 @@ const LiveTab = () => {
                                     <Geography
                                         key={geography.rsmKey}
                                         geography={geography}
-                                        fill={colors.darkBlue}
+                                        fill={highlighted.properties?.name === geography.properties?.name ? colors.red : colors.darkBlue}
                                         stroke={colors.white}
                                         strokeWidth={0.2}
+                                        onClick={() => handleClick(geography)}
                                         style={{
-                                            hover: { outline: "none" },
+                                            hover: {
+                                                fill: colors.red,
+                                                stroke: colors.darkRed,
+                                                strokeWidth: 0.75,
+                                                outline: "none",
+                                                transition: "all 250ms"
+                                            },
                                             pressed: { outline: "none" },
                                             default: { outline: "none" },
                                         }}
@@ -94,33 +102,37 @@ const LiveTab = () => {
                         }
                     </Geographies>
 
-                    {country &&
-                        <Marker
-                            key={country.name}
-                            coordinates={simulation[place]}
-                            onMouseOver={() => {
-                                setTooltipContent("Map tooltip");
-                            }}
-                            onMouseLeave={() => {
-                                setTooltipContent("");
-                            }}
-                            data-tooltip-id="my-tooltip"
-                            data-tooltip-content={tooltipContent}
-                            style={{ hover: { outline: "none" }, default: { outline: 'none' } }}
-                        >
-                            <circle r={4} fill={colors.red} stroke={colors.white} />
-                        </Marker>}
+                    {country && <Marker key={country.name} coordinates={country.coordinates}>
+                        <circle r={2} fill={colors.red} stroke={colors.white} />
+                    </Marker>}
                 </ComposableMap>
+
                 <div style={{ marginLeft: '2vw', marginTop: '2vw' }}>
                     <span style={{ display: 'block', fontSize: 20, fontWeight: 'bold', marginBottom: '2vw', color: colors.darkBlue }}>Filters</span>
                     <SelectField options={markers} label={"Country"} value={country} setValue={handleCountryChange} />
                     <SelectField options={markers} label={"Age of migrants"} value={country} setValue={handleCountryChange} />
                     <SelectField options={markers} label={"Sex of migrants"} value={country} setValue={handleCountryChange} />
                     <SelectField options={markers} label={"Year of migration"} value={country} setValue={handleCountryChange} />
+                    <Legend />
                 </div>
+
+
             </div>
             <span style={{ display: 'block', fontSize: 22, fontWeight: 'bold', marginTop: '2vw', color: colors.darkGray }}>Charts</span>
-            <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop: '2vw', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ marginTop: '2vw', paddingLeft: '2vw' }}>
+                <span style={{ display: 'flex', fontSize: 16, fontWeight: 'bold', marginTop: 20 }}>
+                    Immigrants end emigrants number evolution from the selected year to present</span>
+                <LineChart
+                    width={800}
+                    height={400}
+                    series={[
+                        { data: pData, label: 'pv', color: colors.darkGreen },
+                        { data: uData, label: 'uv', color: colors.darkRed },
+                    ]}
+                    xAxis={[{ scaleType: 'point', data: xLabels }]}
+                />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop: '5vw', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <PieChart
                         series={[
@@ -156,9 +168,10 @@ const LiveTab = () => {
                 </div>
             </div>
 
+
         </div >
 
     )
 }
 
-export default LiveTab
+export default HistoryTab
