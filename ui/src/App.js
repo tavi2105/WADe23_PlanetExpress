@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import Welcome from './routes/Welcome/index'
 import MigrationMap from './routes/MigrationMap';
+import AddEvent from './routes/AddEvent';
 import './App.css';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/migration" element={<MigrationMap />} />
+          <Route path="/event" element={<AddEvent />} />
         </Routes>
       </div>
     </BrowserRouter>

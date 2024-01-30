@@ -39,6 +39,7 @@ const Welcome = () => {
     };
 
     const handleMapButtonClick = () => { navigate('/migration', { state: { category: migrationCategory } }) }
+    const handleAddMigrationButtonClick = () => { navigate('/event') }
 
     return (
         <ThemeProvider theme={darkTheme}>
@@ -89,7 +90,11 @@ const Welcome = () => {
                         width: 200, minWidth: '40em', marginTop: '3em', color: colors.white, borderColor: colors.white, "&:hover": {
                             borderColor: colors.white
                         }
-                    }}>Add migration event</Button>
+                    }}
+                    onClick={handleAddMigrationButtonClick}
+                    >
+                        Add migration event
+                    </Button>
                 </div>
 
             </body >
