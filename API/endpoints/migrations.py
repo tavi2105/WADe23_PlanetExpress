@@ -1,6 +1,6 @@
 from flask import Blueprint, Response, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from sparql_calls.migration import __get_migrations
+from sparql_calls.migration import __get_migrations, __get_migrations_filters_value
+from flask_cors import cross_origin
 
 import json
 
@@ -17,3 +17,10 @@ def get_migrations():
     migrators = json.dumps(__get_migrations(age=age, gender=gender, country=country, year=year), indent=4)
     return Response(migrators, mimetype="application/json", status=200)
 
+
+@migrations.route('/migrations/filters/', methods=['GET'])
+def get_migrations_filter():
+    filter_name = request.args.get('filter', default=None, type=str)
+
+    migrators = json.dumps(__get_migrations_filters_value(filter_name), indent=4)
+    return Response(migrators, mimetype="application/json", status=200)
