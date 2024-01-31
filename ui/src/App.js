@@ -8,16 +8,19 @@ import Welcome from './routes/Welcome/index'
 import MigrationMap from './routes/MigrationMap';
 import AddEvent from './routes/AddEvent';
 import './App.css';
+import { HistoryProvider } from './context/historyContext';
 
 function App() {
   return (
     <BrowserRouter>
       <div style={{ height: '100vh', display: 'flex', flex: 1 }}>
-        <Routes>
-          <Route path="/" element={<Welcome />} />
-          <Route path="/migration" element={<MigrationMap />} />
-          <Route path="/event" element={<AddEvent />} />
-        </Routes>
+        <HistoryProvider>
+          <Routes>
+            <Route path="/" element={<Welcome />} />
+            <Route path="/migration" element={<MigrationMap />} />
+            <Route path="/event" element={<AddEvent />} />
+          </Routes>
+        </HistoryProvider>
       </div>
     </BrowserRouter>
   );

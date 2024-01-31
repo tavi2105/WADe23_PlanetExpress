@@ -116,7 +116,6 @@ const LiveTab = () => {
                     <SelectField options={markers} label={"Country"} value={country} setValue={handleCountryChange} />
                     <SelectField options={markers} label={"Age of migrants"} value={country} setValue={handleCountryChange} />
                     <SelectField options={markers} label={"Sex of migrants"} value={country} setValue={handleCountryChange} />
-                    <SelectField options={markers} label={"Year of migration"} value={country} setValue={handleCountryChange} />
                 </div>
             </div>
             <span style={{ display: 'block', fontSize: 22, fontWeight: 'bold', marginTop: '2vw', color: colors.darkGray }}>Charts</span>

@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
     ComposableMap,
     Geographies,
     Geography,
     Marker,
 } from "react-simple-maps";
+import Button from '@mui/material/Button';
 
 import { colors } from '../../../../constants';
 import topojson from '../../../../assets/topo.json'
@@ -13,7 +14,9 @@ import SelectField from '../SelectField';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { PieChart } from '@mui/x-charts/PieChart';
 import Legend from './Legend';
-
+import Loading from '../../../../components/Loading';
+import { useHistoryContext } from '../../../../context/historyContext';
+import { mapCountries } from './utils';
 
 const markers = [
     {
@@ -22,7 +25,29 @@ const markers = [
     },
 ];
 
-const HistoryTab = () => {
+const HistoryTab = ({ applyFilters, loading }) => {
+
+    const [historyState,] = useHistoryContext()
+    const [countryFilter, setCountryFilter] = useState('Romania')
+
+    console.log("din comp", historyState)
+    const countryMapping = useMemo(() => mapCountries(historyState.migrations), [historyState])
+
+    const mapColor = (countryName) => {
+        if (countryName === countryFilter) {
+            return colors.turqoise
+        }
+        if (countryMapping.origin.countries.includes(countryName)) {
+            return countryMapping.origin.color
+        }
+        if (countryMapping.destination.countries.includes(countryName)) {
+            return countryMapping.destination.color
+        }
+        if (countryMapping.originAndDestination.countries.includes(countryName)) {
+            return countryMapping.originAndDestination.color
+        }
+        return colors.gray
+    }
 
     const [highlighted, setHighlighted] = useState({})
     const [country, setCountry] = useState({
@@ -45,6 +70,8 @@ const HistoryTab = () => {
 
     console.log(highlighted)
 
+
+
     const handleClick = (geo) => {
         console.log(geo)
         setHighlighted(geo)
@@ -57,6 +84,11 @@ const HistoryTab = () => {
         setCountry(value);
     };
     console.log("dest", highlighted)
+    if (loading) {
+        return (
+            <Loading />
+        )
+    }
     return (
         <div >
             <span style={{ fontSize: 18 }}>{highlighted.properties?.name ? `Country: ${highlighted.properties?.name}` : 'Click on a country for details.'}</span>
@@ -81,7 +113,7 @@ const HistoryTab = () => {
                                     <Geography
                                         key={geography.rsmKey}
                                         geography={geography}
-                                        fill={highlighted.properties?.name === geography.properties?.name ? colors.red : colors.darkBlue}
+                                        fill={mapColor(geography.properties?.name)}
                                         stroke={colors.white}
                                         strokeWidth={0.2}
                                         onClick={() => handleClick(geography)}
@@ -102,9 +134,9 @@ const HistoryTab = () => {
                         }
                     </Geographies>
 
-                    {country && <Marker key={country.name} coordinates={country.coordinates}>
+                    {/* {country && <Marker key={country.name} coordinates={country.coordinates}>
                         <circle r={2} fill={colors.red} stroke={colors.white} />
-                    </Marker>}
+                    </Marker>} */}
                 </ComposableMap>
 
                 <div style={{ marginLeft: '2vw', marginTop: '2vw' }}>
@@ -113,6 +145,16 @@ const HistoryTab = () => {
                     <SelectField options={markers} label={"Age of migrants"} value={country} setValue={handleCountryChange} />
                     <SelectField options={markers} label={"Sex of migrants"} value={country} setValue={handleCountryChange} />
                     <SelectField options={markers} label={"Year of migration"} value={country} setValue={handleCountryChange} />
+                    <Button variant="contained"
+                        sx={{
+                            width: '20vw', backgroundColor: colors.darkBlue, color: colors.white, "&:hover": {
+                                backgroundColor: colors.darkGray
+                            }
+                        }}
+                        onClick={() => mapCountries(historyState.migrations)}
+                    >
+                        Add event
+                    </Button>
                     <Legend />
                 </div>
 

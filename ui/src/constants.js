@@ -11,5 +11,5 @@ export const colors = {
     darkGreen: '#07543A',
     oldBackground: '#D5C8BD',
     brown: '#634b33',
-    violet: '#8852a3'
+    violet: '#8852a3',
 }
