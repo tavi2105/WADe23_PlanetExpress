@@ -13,7 +13,7 @@ print(csv_contents[0].keys())
 graph = Graph()
 
 schema = Namespace('https://schema.org/')
-dbpedia_page = Namespace('https://dbpedia.org/page/')
+dbpedia_page = Namespace('https://dbpedia.org/resource/')
 
 for row in csv_contents:
     migration = URIRef("urn:" + (row['Country of birth'] + "-" + row['Country of residence'] + "-" + row['Sex']
@@ -21,10 +21,10 @@ for row in csv_contents:
     name = Literal(row['Country of birth'] + "-" + row['Country of residence'], datatype=XSD['string'])
     country = URIRef(to_iri(dbpedia_page + row['Country of birth']))
     country_name = Literal(row['Country of birth'], lang='en')
-    country_name_code = Literal(row['COUB'])
+    country_name_code = Literal(row['COUB'], lang='en')
     country_dest = URIRef(to_iri(dbpedia_page + row['Country of residence']))
     country_dest_name = Literal(row['Country of residence'], lang='en')
-    country_dest_name_code = Literal(row['COU'])
+    country_dest_name_code = Literal(row['COU'], lang='en')
     age = Literal(row['Age'], lang='en')
     value = Literal(int(row['Value']), datatype=XSD['int'])
     sex = Literal(row['Sex'], lang='en')
@@ -38,13 +38,9 @@ for row in csv_contents:
     graph.add((migration, URIRef(schema + "Number"), value))
     graph.add((migration, URIRef(schema + "Number"), progress))
 
-    graph.add((migration, URIRef(schema + "Country"), country))
-    # graph.add((country, URIRef(schema + "name"), country_name))
-    # graph.add((country, URIRef(schema), country_name_code))
+    graph.add((migration, URIRef(schema + "tripOrigin"), country))
 
     graph.add((migration, URIRef(schema + "Country"), country_dest))
-    # graph.add((country_dest, URIRef(schema + "name"), country_dest_name))
-    # graph.add((country_dest, URIRef(schema), country_dest_name_code))
 
 # print(graph.serialize(format='trig'))
 
