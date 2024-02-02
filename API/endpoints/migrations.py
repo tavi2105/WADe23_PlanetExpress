@@ -1,6 +1,5 @@
 from flask import Blueprint, Response, request
 from sparql_calls.migration import __get_migrations, __get_migrations_filters_value
-from flask_cors import cross_origin
 
 import json
 
