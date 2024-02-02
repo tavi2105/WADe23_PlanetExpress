@@ -12,4 +12,6 @@ export const colors = {
     oldBackground: '#D5C8BD',
     brown: '#634b33',
     violet: '#8852a3',
+    green: '#66c902',
+    mediumGray: '#474747'
 }

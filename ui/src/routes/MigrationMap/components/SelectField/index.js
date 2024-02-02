@@ -19,7 +19,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 const SelectField = (props) => {
     const { label, value, setValue, options } = props
-    console.log("props", props)
+    // console.log("props", props.label, props)
     return (
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '4vw', marginBottom: '2vw' }}>
             <span style={{ color: colors.darkBlue, fontSize: 16 }}>{label}</span>
@@ -30,12 +30,12 @@ const SelectField = (props) => {
                 input={<BootstrapInput />}
                 defaultValue={value}
             >
-                {options.map((item) => (
+                {options?.map((item) => (
                     <MenuItem
                         key={item}
                         value={item}
                     >
-                        {item.name}
+                        {item}
                     </MenuItem>
                 ))}
             </Select>

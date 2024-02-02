@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import {
     ComposableMap,
     Geographies,
@@ -11,29 +11,34 @@ import { colors } from '../../../../constants';
 import topojson from '../../../../assets/topo.json'
 
 import SelectField from '../SelectField';
-import { LineChart } from '@mui/x-charts/LineChart';
+import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
 import Legend from './Legend';
-import Loading from '../../../../components/Loading';
+
 import { useHistoryContext } from '../../../../context/historyContext';
-import { mapCountries } from './utils';
+import { mapCountries, getCoordinates, getBarChartData, getPieChartData } from './utils';
+import ErrorScreen from '../../../../components/ErrorScreen'
+import Loading from '../../../../components/Loading';
 
-const markers = [
-    {
-        name: "Romania",
-        coordinates: [25.601198, 45.657974]
-    },
-];
 
-const HistoryTab = ({ applyFilters, loading }) => {
+const HistoryTab = ({ applyFilters, loading, error }) => {
 
     const [historyState,] = useHistoryContext()
+    // console.log("wtfff", historyState)
     const [countryFilter, setCountryFilter] = useState('Romania')
+    const [ageFilter, setAgeFilter] = useState('All ages')
+    const [sexFilter, setSexFilter] = useState('Men and women')
+    const [yearFilter, setYearFilter] = useState('All years')
+    const [highlighted, setHighlighted] = useState({})
 
-    console.log("din comp", historyState)
+    const handleClick = (geo) => {
+        setHighlighted(geo)
+
+    };
+
     const countryMapping = useMemo(() => mapCountries(historyState.migrations), [historyState])
 
-    const mapColor = (countryName) => {
+    const mapColor = useCallback((countryName) => {
         if (countryName === countryFilter) {
             return colors.turqoise
         }
@@ -47,48 +52,54 @@ const HistoryTab = ({ applyFilters, loading }) => {
             return countryMapping.originAndDestination.color
         }
         return colors.gray
-    }
+    }, [historyState])
 
-    const [highlighted, setHighlighted] = useState({})
-    const [country, setCountry] = useState({
-        name: "Romania",
-        coordinates: [25.601198, 45.657974]
-    })
+    const coordinates = useMemo(() => historyState.migrations.length > 0 && getCoordinates(historyState.migrations, countryFilter), [historyState])
+    // console.log("blaa", coordinates)
 
-    const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
-    const uData = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
+    const { countryLabels, immigrantsSeries, emigrantsSeries } = useMemo(() => historyState.migrations.length > 0 && getBarChartData(historyState.migrations, countryFilter), [historyState])
+    // console.log(countryLabels, immigrantsSeries, emigrantsSeries)
+    const { immigrantsPie, emigrantsPie } = useMemo(() => historyState.migrations.length > 0 && getPieChartData(historyState.migrations, countryFilter), [historyState])
+    // console.log(immigrantsPie, emigrantsPie)
 
-    const xLabels = [
-        'Page A',
-        'Page B',
-        'Page C',
-        'Page D',
-        'Page E',
-        'Page F',
-        'Page G',
-    ];
-
-    console.log(highlighted)
-
-
-
-    const handleClick = (geo) => {
-        console.log(geo)
-        setHighlighted(geo)
-
-    };
+    console.log("filterrrr", countryFilter)
     const handleCountryChange = (event) => {
         const {
             target: { value },
         } = event;
-        setCountry(value);
+        setCountryFilter(value);
     };
-    console.log("dest", highlighted)
+    const handleAgeChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setAgeFilter(value);
+    };
+    const handleSexChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setSexFilter(value);
+    };
+    const handleYearChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setYearFilter(value);
+    };
+
     if (loading) {
         return (
             <Loading />
         )
     }
+    if (error) {
+        return (
+            <ErrorScreen />
+        )
+    }
+
+
     return (
         <div >
             <span style={{ fontSize: 18 }}>{highlighted.properties?.name ? `Country: ${highlighted.properties?.name}` : 'Click on a country for details.'}</span>
@@ -113,7 +124,7 @@ const HistoryTab = ({ applyFilters, loading }) => {
                                     <Geography
                                         key={geography.rsmKey}
                                         geography={geography}
-                                        fill={mapColor(geography.properties?.name)}
+                                        fill={geography.properties.name === highlighted.properties?.name ? colors.darkBlue : mapColor(geography.properties?.name)}
                                         stroke={colors.white}
                                         strokeWidth={0.2}
                                         onClick={() => handleClick(geography)}
@@ -134,81 +145,98 @@ const HistoryTab = ({ applyFilters, loading }) => {
                         }
                     </Geographies>
 
-                    {/* {country && <Marker key={country.name} coordinates={country.coordinates}>
+                    {historyState.migrations.length > 0 && <Marker key={countryFilter} coordinates={coordinates}>
                         <circle r={2} fill={colors.red} stroke={colors.white} />
-                    </Marker>} */}
+                    </Marker>}
                 </ComposableMap>
 
                 <div style={{ marginLeft: '2vw', marginTop: '2vw' }}>
                     <span style={{ display: 'block', fontSize: 20, fontWeight: 'bold', marginBottom: '2vw', color: colors.darkBlue }}>Filters</span>
-                    <SelectField options={markers} label={"Country"} value={country} setValue={handleCountryChange} />
-                    <SelectField options={markers} label={"Age of migrants"} value={country} setValue={handleCountryChange} />
-                    <SelectField options={markers} label={"Sex of migrants"} value={country} setValue={handleCountryChange} />
-                    <SelectField options={markers} label={"Year of migration"} value={country} setValue={handleCountryChange} />
+                    <SelectField options={historyState?.filterCountries} label={"Country"} value={countryFilter} setValue={handleCountryChange} />
+                    <SelectField options={historyState?.filterAge} label={"Age of migrants"} value={ageFilter} setValue={handleAgeChange} />
+                    <SelectField options={historyState?.filterSex} label={"Sex of migrants"} value={sexFilter} setValue={handleSexChange} />
+                    <SelectField options={historyState?.filterYear} label={"Year of migration"} value={yearFilter} setValue={handleYearChange} />
                     <Button variant="contained"
                         sx={{
                             width: '20vw', backgroundColor: colors.darkBlue, color: colors.white, "&:hover": {
                                 backgroundColor: colors.darkGray
                             }
                         }}
-                        onClick={() => mapCountries(historyState.migrations)}
+                        onClick={() => applyFilters(countryFilter, ageFilter, sexFilter, yearFilter)}
                     >
-                        Add event
+                        Apply filters
                     </Button>
                     <Legend />
                 </div>
 
 
             </div>
-            <span style={{ display: 'block', fontSize: 22, fontWeight: 'bold', marginTop: '2vw', color: colors.darkGray }}>Charts</span>
-            <div style={{ marginTop: '2vw', paddingLeft: '2vw' }}>
-                <span style={{ display: 'flex', fontSize: 16, fontWeight: 'bold', marginTop: 20 }}>
-                    Immigrants end emigrants number evolution from the selected year to present</span>
-                <LineChart
-                    width={800}
-                    height={400}
-                    series={[
-                        { data: pData, label: 'pv', color: colors.darkGreen },
-                        { data: uData, label: 'uv', color: colors.darkRed },
-                    ]}
-                    xAxis={[{ scaleType: 'point', data: xLabels }]}
-                />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop: '5vw', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <PieChart
-                        series={[
-                            {
-                                data: [
-                                    { id: 0, value: 10, label: 'series A' },
-                                    { id: 1, value: 15, label: 'series B' },
-                                    { id: 2, value: 20, label: 'series C' },
-                                ],
-                            },
-                        ]}
-                        width={500}
-                        height={300}
-                    />
-                    <span style={{ display: 'flex', fontSize: 16, fontWeight: 'bold', marginTop: 20 }}>Emigrants number from each country</span>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <PieChart
-                        series={[
-                            {
-                                data: [
-                                    { id: 0, value: 10, label: 'series A' },
-                                    { id: 1, value: 15, label: 'series B' },
-                                    { id: 2, value: 20, label: 'series C' },
-                                ],
-                            },
-                        ]}
-                        width={500}
-                        height={300}
-                        title='Number of migrants over the years (selected year to present year'
-                    />
-                    <span style={{ display: 'flex', fontSize: 16, fontWeight: 'bold', marginTop: 20 }}>Immigrants number from each country</span>
-                </div>
-            </div>
+            {
+                historyState.migrations.length > 0 && (
+                    <>
+                        <span style={{ display: 'block', fontSize: 22, fontWeight: 'bold', marginTop: '2vw', color: colors.darkGray }}>Charts</span>
+                        <div style={{ marginTop: '2vw', paddingLeft: '2vw' }}>
+                            <span style={{ display: 'flex', fontSize: 16, fontWeight: 'bold', marginTop: 20 }}>
+                                {`Immigrants end emigrants number on top 10 countries by number of individuals (for ${countryFilter} with selected filters)`}</span>
+                            <BarChart
+                                xAxis={[{ scaleType: 'band', data: countryLabels }]}
+                                series={[{ data: immigrantsSeries, color: colors.darkGreen, label: "number of immigrants" }, { data: emigrantsSeries, color: colors.darkRed, label: "number of emigrants" }]}
+                                sx={{ padding: 1 }}
+                                height={500}
+                            />
+                        </div>
+
+                        {emigrantsPie.length > 1 &&
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100vw', alignContent: 'flex-start', marginTop: '2vw', paddingLeft: '2vw' }}>
+                                <span style={{ display: 'flex', fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Emigrants number to each country</span>
+                                <PieChart
+                                    series={[
+                                        {
+                                            data: emigrantsPie
+                                        },
+                                    ]}
+                                    // width={500}
+                                    height={300}
+                                    slotProps={{
+                                        legend: {
+                                            direction: 'column',
+                                            position: { vertical: 'top', horizontal: 'left' },
+                                            padding: 0,
+                                        },
+
+                                    }}
+
+                                />
+                            </div>
+                        }
+                        {immigrantsPie.length > 1 &&
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100vw', alignContent: 'flex-start', marginTop: '2vw', paddingLeft: '2vw' }}>
+                                <span style={{ display: 'flex', fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Immigrants number from each country</span>
+                                <PieChart
+                                    series={[
+                                        {
+                                            data: immigrantsPie
+                                        },
+                                    ]}
+
+                                    height={300}
+                                    slotProps={{
+                                        legend: {
+                                            direction: 'column',
+                                            position: { vertical: 'top', horizontal: 'left' },
+                                            padding: 0,
+                                        },
+
+                                    }}
+                                />
+
+                            </div>
+                        }
+
+                    </>
+                )
+            }
+
 
 
         </div >

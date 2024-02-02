@@ -6,7 +6,8 @@ const HistoryProvider = ({ children }) => {
         migrations: [],
         filterCountries: [],
         filterSex: [],
-        filterAge: []
+        filterAge: [],
+        filterYear: []
     });
 
     return (

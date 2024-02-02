@@ -19,6 +19,9 @@ const StyledTab = styled(Tab)({
         color: colors.darkBlue,
         backgroundColor: colors.oldBackground,
     },
+    "&.Mui-disabled": {
+        color: colors.mediumGray,
+    },
     color: colors.oldBackground,
     fontWeight: 'bold'
 });
@@ -29,26 +32,22 @@ const MigrationMap = () => {
     const { category } = state;
     const [value, setValue] = React.useState('1');
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
     const [historyState, setHistoryState] = useHistoryContext()
-    console.log(historyState)
+    // console.log(historyState)
 
-    const getMigrations = () => {
+    const getMigrations = (country, age, gender, year) => {
         setLoading(true)
-        axios.get('https://enormous-poetic-ewe.ngrok-free.app/migrations/?country=Romania',
+        axios.get(`https://enormous-poetic-ewe.ngrok-free.app/migrations/?country=${country}&age=${age}&gender=${gender}&year=${year}`,
             {
-                // mode: 'no-cors',
                 headers: {
                     'ngrok-skip-browser-warning': '1',
-                    // 'Access-Control-Allow-Origin': '*',
-                    // 'Content-Type': 'application/json',
                 },
-                // withCredentials: true,
-                // credentials: 'same-origin',
             })
             .then(response => {
                 setLoading(false)
@@ -56,15 +55,47 @@ const MigrationMap = () => {
                 setHistoryState({ ...historyState, migrations: response.data })
             })
             .catch(error => {
+                setLoading(false)
+                setError(true)
                 console.error(error);
             });
     }
 
-    useEffect(() =>
-        getMigrations(), []);
+    const getInitialHistoryData = () => {
+        const urls = [
+            'https://enormous-poetic-ewe.ngrok-free.app/migrations/',
+            'https://enormous-poetic-ewe.ngrok-free.app/migrations/filters/'
+        ]
+        const requests = urls.map((url) => axios.get(url, {
+            headers: {
+                'ngrok-skip-browser-warning': '1',
+            },
+        }));
+        setLoading(true)
 
+        axios.all(requests).then((responses) => {
+            console.log(responses)
+            const state = {
+                migrations: responses[0].data,
+                filterCountries: responses[1].data.country,
+                filterSex: responses[1].data.gender,
+                filterAge: responses[1].data.age,
+                filterYear: responses[1].data.year
+            }
+            setHistoryState(state)
+            setLoading(false)
+        })
+            .catch(error => {
+                setLoading(false)
+                setError(true)
+                console.error(error);
+            });
+    }
 
-    console.log("din screen", loading)
+    useEffect(() => {
+        getInitialHistoryData()
+    }, []);
+
     return (
         <body style={{
             backgroundPosition: '100% 100%',
@@ -80,13 +111,13 @@ const MigrationMap = () => {
                         <TabList onChange={handleChange} aria-label="lab API tabs example">
                             <StyledTab label="History" value="1" />
 
-                            <StyledTab label="Live" value="2" />
+                            <StyledTab label="Live" value="2" disabled={loading} />
 
                         </TabList>
                     </Box>
                     <h2 style={{ marginLeft: '1vw' }}>{`Migration map of ${category}`}</h2>
                     <TabPanel value="1" >
-                        <HistoryTab loading={loading} applyFilters={getMigrations} />
+                        <HistoryTab applyFilters={getMigrations} loading={loading} error={error} />
                     </TabPanel>
                     <TabPanel value="2">
                         <LiveTab />

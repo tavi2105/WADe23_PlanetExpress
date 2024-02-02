@@ -12,43 +12,56 @@ import topojson from '../../../../assets/topo.json'
 import SelectField from '../SelectField';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { Tooltip } from "react-tooltip";
-
-
-
-const markers = [
-    {
-        name: "Romania",
-        coordinates: [25.601198, 45.657974]
-    },
-];
-
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 
 const LiveTab = () => {
+    const [data, setData] = useState({})
     const [tooltipContent, setTooltipContent] = useState('')
     const [country, setCountry] = useState({
         name: "Romania",
         coordinates: [25.601198, 45.657974]
     })
 
-
-    const simulation = [[109.47529475294755, 20.197273926357823], [108.65448654486545, 22.50701215076758], [108.6256862568626, 24.36852447986358]]
-    const [place, setPlace] = useState(0)
-
     useEffect(() => {
-        const interval = setInterval(() => {
-            if (place < 2) {
-                setPlace(place + 1)
-            }
-            else {
-                setPlace(0)
-            }
-        }, 3000);
-
-        return () => clearInterval(interval);
+        const controller = new AbortController();
+        const fetchData = async () => {
+            await fetchEventSource('https://enormous-poetic-ewe.ngrok-free.app/live', {
+                method: "GET",
+                headers: {
+                    Accept: "text/event-stream",
+                    'ngrok-skip-browser-warning': '1',
+                },
+                signal: controller.signal,
+                onopen(res) {
+                    if (res.ok && res.status === 200) {
+                        console.log("Connection made ", res);
+                    } else if (
+                        res.status >= 400 &&
+                        res.status < 500 &&
+                        res.status !== 429
+                    ) {
+                        console.log("Client side error ", res);
+                    }
+                },
+                onmessage(event) {
+                    const parsedData = JSON.parse(event.data);
+                    setData(parsedData);
+                    console.log(parsedData)
+                },
+                onclose() {
+                    controller.abort();
+                    console.log("Connection closed by the server");
+                },
+                onerror(err) {
+                    console.log("There was an error from server", err);
+                },
+            });
+        };
+        fetchData();
+        return () => controller.abort();
     }, []);
-
-    console.log(tooltipContent)
+    // console.log(tooltipContent)
 
     const handleCountryChange = (event) => {
         const {
@@ -70,7 +83,7 @@ const LiveTab = () => {
                     width={500}
                     height={300}
                     style={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.5)', width: '70vw', border: '1px solid', borderColor: colors.darkBlue, marginTop: 10, borderRadius: 10
+                        backgroundColor: 'rgba(255, 255, 255, 0.5)', width: '90vw', border: '1px solid', borderColor: colors.darkBlue, marginTop: 10, borderRadius: 10
                     }}
                 >
                     <Geographies geography={topojson} >
@@ -94,12 +107,12 @@ const LiveTab = () => {
                         }
                     </Geographies>
 
-                    {country &&
+                    {data && data.length > 0 && data.map((m) => (
                         <Marker
-                            key={country.name}
-                            coordinates={simulation[place]}
+                            // key={}
+                            coordinates={[m.coordinate.longitude, m.coordinate.latitude]}
                             onMouseOver={() => {
-                                setTooltipContent("Map tooltip");
+                                setTooltipContent(m.origin + ' - ' + m.destination);
                             }}
                             onMouseLeave={() => {
                                 setTooltipContent("");
@@ -108,15 +121,18 @@ const LiveTab = () => {
                             data-tooltip-content={tooltipContent}
                             style={{ hover: { outline: "none" }, default: { outline: 'none' } }}
                         >
-                            <circle r={4} fill={colors.red} stroke={colors.white} />
-                        </Marker>}
+                            <circle r={2} fill={colors.white} stroke={colors.green} strokeWidth={2} />
+                            {/* <rect width={4} height={4} fill={colors.white} stroke={colors.red} strokeWidth={2} /> */}
+                        </Marker>
+                    ))
+                    }
                 </ComposableMap>
-                <div style={{ marginLeft: '2vw', marginTop: '2vw' }}>
+                {/* <div style={{ marginLeft: '2vw', marginTop: '2vw' }}>
                     <span style={{ display: 'block', fontSize: 20, fontWeight: 'bold', marginBottom: '2vw', color: colors.darkBlue }}>Filters</span>
                     <SelectField options={markers} label={"Country"} value={country} setValue={handleCountryChange} />
                     <SelectField options={markers} label={"Age of migrants"} value={country} setValue={handleCountryChange} />
                     <SelectField options={markers} label={"Sex of migrants"} value={country} setValue={handleCountryChange} />
-                </div>
+                </div> */}
             </div>
             <span style={{ display: 'block', fontSize: 22, fontWeight: 'bold', marginTop: '2vw', color: colors.darkGray }}>Charts</span>
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop: '2vw', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -158,6 +174,7 @@ const LiveTab = () => {
         </div >
 
     )
+    // return null
 }
 
 export default LiveTab
