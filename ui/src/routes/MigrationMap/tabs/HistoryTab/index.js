@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import { colors } from '../../../../constants';
 import topojson from '../../../../assets/topo.json'
 
-import SelectField from '../SelectField';
+import SelectField from '../../components/SelectField';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
 import Legend from './Legend';
@@ -19,6 +19,7 @@ import { useHistoryContext } from '../../../../context/historyContext';
 import { mapCountries, getCoordinates, getBarChartData, getPieChartData } from './utils';
 import ErrorScreen from '../../../../components/ErrorScreen'
 import Loading from '../../../../components/Loading';
+import MigrationEventsTable from './MigrationEventsTable';
 
 
 const HistoryTab = ({ applyFilters, loading, error }) => {
@@ -99,7 +100,6 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
         )
     }
 
-
     return (
         <div >
             <span style={{ fontSize: 18 }}>{highlighted.properties?.name ? `Country: ${highlighted.properties?.name}` : 'Click on a country for details.'}</span>
@@ -171,6 +171,7 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
 
 
             </div>
+            {!!highlighted.properties && <MigrationEventsTable migrationEvents={historyState?.migrations.filter(m => m.destName.value === highlighted.properties?.name || m.fromName.value === highlighted.properties?.name)} />}
             {
                 historyState.migrations.length > 0 && (
                     <>

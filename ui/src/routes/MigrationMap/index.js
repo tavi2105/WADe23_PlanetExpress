@@ -5,8 +5,8 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
-import HistoryTab from './components/HistoryTab';
-import LiveTab from './components/LiveTab'
+import HistoryTab from './tabs/HistoryTab';
+import LiveTab from './tabs/LiveTab'
 import { useLocation } from 'react-router-dom';
 import { styled } from "@mui/material/styles";
 import { useHistoryContext } from '../../context/historyContext';

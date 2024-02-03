@@ -132,3 +132,13 @@ export const getPieChartData = (migrations, countryFilter) => {
     emigrantsPie = [...emigrantsPie, { id: 10, label: 'Others', value: otherEmigrants, color: getMyColor() }]
     return { immigrantsPie, emigrantsPie }
 }
+
+export const getVocab = (path) => {
+    const url = new URL(path)
+    return url.origin
+
+}
+export const getType = (path) => {
+    const url = new URL(path)
+    return url.pathname.substring(1)
+}

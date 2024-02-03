@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
     ComposableMap,
     Geographies,
@@ -9,24 +9,27 @@ import {
 import { colors } from '../../../../constants';
 import topojson from '../../../../assets/topo.json'
 
-import SelectField from '../SelectField';
+import SelectField from '../../components/SelectField';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { Tooltip } from "react-tooltip";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { useHistoryContext } from '../../../../context/historyContext';
+import { mapMarkers } from './utils';
 
 
 const LiveTab = () => {
-    const [data, setData] = useState({})
+
+    const [historyState,] = useHistoryContext()
+    const [data, setData] = useState([])
     const [tooltipContent, setTooltipContent] = useState('')
-    const [country, setCountry] = useState({
-        name: "Romania",
-        coordinates: [25.601198, 45.657974]
-    })
+    const [country, setCountry] = useState('None')
+    const markerMapping = useMemo(() => { return mapMarkers(data, country) }, [data, country])
+    console.log("mapp", markerMapping)
 
     useEffect(() => {
         const controller = new AbortController();
         const fetchData = async () => {
-            await fetchEventSource('https://enormous-poetic-ewe.ngrok-free.app/live', {
+            await fetchEventSource('https://enormous-poetic-ewe.ngrok-free.app/live/', {
                 method: "GET",
                 headers: {
                     Accept: "text/event-stream",
@@ -71,9 +74,10 @@ const LiveTab = () => {
     };
     return (
         <div >
-            <span style={{ fontSize: 18 }}>Hover on marker to see details about ongoin migration event</span>
-            <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                <Tooltip id="my-tooltip">{tooltipContent}</Tooltip>
+            <span style={{ fontSize: 18 }}>Hover on marker to see details about ongoin migration event.</span>
+            <div style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', marginTop: 8 }}>
+                <SelectField options={['None', ...historyState?.filterCountries]} label={"Country"} value={country} setValue={handleCountryChange} />
+                <Tooltip id="my-tooltip" multiline={true}>{tooltipContent}</Tooltip>
                 <ComposableMap
                     projectionConfig={{
                         rotate: [0, 0, 0],
@@ -107,12 +111,12 @@ const LiveTab = () => {
                         }
                     </Geographies>
 
-                    {data && data.length > 0 && data.map((m) => (
+                    {markerMapping.length > 0 && markerMapping.map((m) => (
                         <Marker
                             // key={}
-                            coordinates={[m.coordinate.longitude, m.coordinate.latitude]}
+                            coordinates={m.coordinates}
                             onMouseOver={() => {
-                                setTooltipContent(m.origin + ' - ' + m.destination);
+                                setTooltipContent(m.tooltipText);
                             }}
                             onMouseLeave={() => {
                                 setTooltipContent("");
@@ -121,18 +125,11 @@ const LiveTab = () => {
                             data-tooltip-content={tooltipContent}
                             style={{ hover: { outline: "none" }, default: { outline: 'none' } }}
                         >
-                            <circle r={2} fill={colors.white} stroke={colors.green} strokeWidth={2} />
-                            {/* <rect width={4} height={4} fill={colors.white} stroke={colors.red} strokeWidth={2} /> */}
+                            <circle r={2} fill={colors.white} stroke={m.color} strokeWidth={2} />
                         </Marker>
                     ))
                     }
                 </ComposableMap>
-                {/* <div style={{ marginLeft: '2vw', marginTop: '2vw' }}>
-                    <span style={{ display: 'block', fontSize: 20, fontWeight: 'bold', marginBottom: '2vw', color: colors.darkBlue }}>Filters</span>
-                    <SelectField options={markers} label={"Country"} value={country} setValue={handleCountryChange} />
-                    <SelectField options={markers} label={"Age of migrants"} value={country} setValue={handleCountryChange} />
-                    <SelectField options={markers} label={"Sex of migrants"} value={country} setValue={handleCountryChange} />
-                </div> */}
             </div>
             <span style={{ display: 'block', fontSize: 22, fontWeight: 'bold', marginTop: '2vw', color: colors.darkGray }}>Charts</span>
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop: '2vw', alignItems: 'center', justifyContent: 'space-between' }}>
