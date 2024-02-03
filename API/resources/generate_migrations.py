@@ -39,7 +39,7 @@ def get_coordinate(dest, origin, progress):
 
 def fill_empty_migrations():
     for value in empty:
-        number_of_people = random.randint(0, 99 + int(value / 10))
+        number_of_people = random.randint(10, 99 + int(value / 10))
         destination = random.randint(0, (number_of_people % len(country_list)))
         origin = random.randint(0, (number_of_people % len(country_list)))
         if destination == origin:
