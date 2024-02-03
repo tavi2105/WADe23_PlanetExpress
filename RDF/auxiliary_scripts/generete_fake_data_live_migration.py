@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 import csv
 import random
 
-d1 = datetime.strptime('22/1/2024 00:00', '%d/%m/%Y %H:%M')
-d2 = datetime.strptime('25/1/2024 00:00', '%d/%m/%Y %H:%M')
+d1 = datetime.strptime('1/2/2024 21:00', '%d/%m/%Y %H:%M')
+d2 = datetime.strptime('1/2/2024 22:00', '%d/%m/%Y %H:%M')
 delta = d2 - d1
 
 

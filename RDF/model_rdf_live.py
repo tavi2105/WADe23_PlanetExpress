@@ -31,7 +31,7 @@ for row in csv_contents:
     date_time = Literal(row['Datetime'], lang='en')
     progress = Literal(int(row['Value']), datatype=XSD['int'])
 
-    graph.add((migration, URIRef(schema + "Event"), name))
+    graph.add((migration, URIRef(schema + "Trip"), name))
     graph.add((migration, FOAF.age, age))
     graph.add((migration, FOAF.gender, sex))
     graph.add((migration, URIRef(schema + "DateTime"), date_time))
