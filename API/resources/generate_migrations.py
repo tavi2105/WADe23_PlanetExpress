@@ -4,7 +4,7 @@ import datetime
 
 from sparql_calls.add_migration import add_entry_sparql
 
-age_list = ["15-24 years", "25-64 years", "65+ years", "All ages", "Unknown age"]
+age_list = ["15-24 years", "25-64 years", "65+ years", "Unknown age"]
 gender_list = ["Men", "Men and women", "Women"]
 country_list = []
 

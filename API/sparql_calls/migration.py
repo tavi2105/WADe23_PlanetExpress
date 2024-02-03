@@ -4,8 +4,6 @@ DEFAULT_AGE = "\"All ages\""
 DEFAULT_YEAR = "\"All years\""
 DEFAULT_GENDER = "\"Men and women\""
 DEFAULT_COUNTRY = "\"Romania\""
-BRACKET_OPEN = "{"
-BRACKET_CLOSED = "}"
 
 sparql = SPARQLWrapper("http://localhost:3030/MiRMigrations/sparql")
 
@@ -53,7 +51,7 @@ def __query_sparql(sparql_query_string):
         if results:
             return results
         else:
-            return False
+            return []
 
     except Exception as err:
         print(err)
@@ -64,19 +62,20 @@ def __get_migrations(age=DEFAULT_AGE, year=DEFAULT_YEAR, gender=DEFAULT_GENDER, 
     year = DEFAULT_YEAR if year is None else "\"" + year + "\""
     gender = DEFAULT_GENDER if gender is None else "\"" + gender + "\""
     country = DEFAULT_COUNTRY if country is None else "\"" + country + "\""
+    year_filter = f"FILTER(?year = {year}@en)" if year != DEFAULT_YEAR else ""
 
     query_string = f'''
     PREFIX foaf: <http://xmlns.com/foaf/0.1/>
     PREFIX schema: <https://schema.org/>
     PREFIX dbr: <https://dbpedia.org/resource/>
-    SELECT *
-    WHERE {BRACKET_OPEN}
+    SELECT DISTINCT *
+    WHERE {{
       ?uri foaf:age ?age;
            foaf:gender ?gender;
            schema:DateTime ?year;
-           schema:tripOrigin ?fromResource;
-           schema:Country ?destResource;
-           schema:Event ?migration;
+           schema:fromLocation ?fromResource;
+           schema:toLocation ?destResource;
+           schema:TravelAction ?migration;
            schema:Number ?value .
       ?uri ?ageType ?age;
            ?genderType ?gender;
@@ -99,39 +98,15 @@ def __get_migrations(age=DEFAULT_AGE, year=DEFAULT_YEAR, gender=DEFAULT_GENDER, 
       ?fromResource ?fromLongitudeType ?fromLongitude .
       FILTER(?age = {age}@en)
       FILTER(?gender = {gender}@en)
+      {year_filter}
       FILTER(?value != 0)
       FILTER(?fromResource != ?destResource)
       FILTER(?destName = {country} || ?fromName = {country})
-    {BRACKET_CLOSED}
+    }}
     ORDER BY DESC(?value)
     '''
 
     return [format_output(item) for item in __query_sparql(query_string)]
-
-
-def __get_migration_single_filter(filter_name):
-    if filter_name == "age":
-        filter_type = "foaf:age"
-    elif filter_name == "gender":
-        filter_type = "foaf:gender"
-    elif filter_name == "year":
-        filter_type = "schema:DateTime"
-    elif filter_name == "country":
-        filter_type = "foaf:name"
-    else:
-        return False
-
-    query_string = f'''
-                PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-                PREFIX schema: <https://schema.org/>
-                SELECT DISTINCT ?{filter_name} 
-                WHERE {BRACKET_OPEN}
-                  ?uri {filter_type} ?{filter_name} .
-                {BRACKET_CLOSED}
-                ORDER BY ASC(?{filter_name})
-                '''
-
-    return [entry[filter_name]["value"] for entry in __query_sparql(query_string)]
 
 
 def __get_migrations_filters_value(filter_name):
@@ -151,9 +126,9 @@ def __get_migrations_filters_value(filter_name):
                     PREFIX foaf: <http://xmlns.com/foaf/0.1/>
                     PREFIX schema: <https://schema.org/>
                     SELECT DISTINCT ?{filter_name} 
-                    WHERE {BRACKET_OPEN}
+                    WHERE {{
                       ?uri {filter_type} ?{filter_name} .
-                    {BRACKET_CLOSED}
+                    }}
                     ORDER BY ASC(?{filter_name})
                     '''
 

@@ -60,24 +60,3 @@ with open('../resources_csv/country_longitude_latitude.csv', 'w', encoding='UTF8
         else:
             writer.writerow([country])
 
-
-#
-# # for countryLink in allcountries:
-# query_string = f'''
-# PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-# PREFIX dbr: <https://dbpedia.org/resource/>
-# PREFIX dbp: <https://dbpedia.org/property>
-# PREFIX georss: <http://www.georss.org/georss/point>
-# SELECT *
-# WHERE {BRACKET_OPEN}
-#         SERVICE <http://dbpedia.org/sparql/> {BRACKET_OPEN}
-#             SELECT *
-#             WHERE {BRACKET_OPEN}
-#                 dbr:Romania ?ceva ?countryName .
-#             {BRACKET_CLOSED}
-#         {BRACKET_CLOSED}
-# {BRACKET_CLOSED}
-# '''
-# print(query_string)
-# print(__query_sparql(query_string))
-

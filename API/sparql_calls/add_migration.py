@@ -47,4 +47,10 @@ def create_query(dest, origin, age, gender, year, value):
 
 def add_entry_sparql(entry):
     # print(entry)
-    pass
+    response = __query_add_sparql(create_query(entry["destination"],
+                                               entry["origin"],
+                                               entry["age"],
+                                               entry["gender"],
+                                               str(datetime.strptime(entry["startTime"], "%Y-%m-%d %H:%M").year),
+                                               entry["numberOfPeople"]))
+    print("Response", response.response.getcode() if response else 500)
