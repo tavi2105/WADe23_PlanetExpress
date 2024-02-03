@@ -9,7 +9,6 @@ import { colors } from '../../../../constants';
 import { getType, getVocab } from './utils';
 
 const MigrationEventsTable = ({ migrationEvents }) => {
-   console.log(getType('https://schema.org/TravelAction'), getVocab('https://schema.org/TravelAction'))
    return migrationEvents.length > 0 && (
       <TableContainer sx={{ maxHeight: 200, backgroundColor: 'rgba(255, 255, 255, 0.5)', marginTop: 5 }}>
          <Table size="small" aria-label="sticky table" stickyHeader>
@@ -28,7 +27,7 @@ const MigrationEventsTable = ({ migrationEvents }) => {
                   const { age, destName, fromName, gender, migration, uri, value, year } = migEvent;
                   return (
                      <TableRow
-                        key={migEvent}
+                        key={uri.value}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 }, minHeight: 20 }}
                         vocab={getVocab(migration.migrationType.value)}
                         typeof={getType(migration.migrationType.value)}

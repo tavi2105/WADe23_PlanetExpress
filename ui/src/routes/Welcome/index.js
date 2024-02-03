@@ -20,7 +20,7 @@ const MenuProps = {
     },
 };
 
-const species = ['Birds', 'Humans']
+const species = ['Humans']
 
 const darkTheme = createTheme({
     palette: {
@@ -91,7 +91,7 @@ const Welcome = () => {
                             borderColor: colors.white
                         }
                     }}
-                    onClick={handleAddMigrationButtonClick}
+                        onClick={handleAddMigrationButtonClick}
                     >
                         Add migration event
                     </Button>

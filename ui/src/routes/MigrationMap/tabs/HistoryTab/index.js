@@ -33,13 +33,20 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
     const [highlighted, setHighlighted] = useState({})
 
     const handleClick = (geo) => {
-        setHighlighted(geo)
-
+        if (geo === highlighted) {
+            setHighlighted({})
+        }
+        else {
+            setHighlighted(geo)
+        }
     };
 
     const countryMapping = useMemo(() => mapCountries(historyState.migrations), [historyState])
 
     const mapColor = useCallback((countryName) => {
+        if (highlighted.properties?.name === countryName) {
+            return colors.darkBlue
+        }
         if (countryName === countryFilter) {
             return colors.turqoise
         }
@@ -53,15 +60,13 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
             return countryMapping.originAndDestination.color
         }
         return colors.gray
-    }, [historyState])
+    }, [historyState, highlighted, setHighlighted])
 
     const coordinates = useMemo(() => historyState.migrations.length > 0 && getCoordinates(historyState.migrations, countryFilter), [historyState])
-    // console.log("blaa", coordinates)
 
     const { countryLabels, immigrantsSeries, emigrantsSeries } = useMemo(() => historyState.migrations.length > 0 && getBarChartData(historyState.migrations, countryFilter), [historyState])
-    // console.log(countryLabels, immigrantsSeries, emigrantsSeries)
+
     const { immigrantsPie, emigrantsPie } = useMemo(() => historyState.migrations.length > 0 && getPieChartData(historyState.migrations, countryFilter), [historyState])
-    // console.log(immigrantsPie, emigrantsPie)
 
     console.log("filterrrr", countryFilter)
     const handleCountryChange = (event) => {
@@ -102,7 +107,7 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
 
     return (
         <div >
-            <span style={{ fontSize: 18 }}>{highlighted.properties?.name ? `Country: ${highlighted.properties?.name}` : 'Click on a country for details.'}</span>
+            <span style={{ fontSize: 18 }}>{highlighted.properties?.name ? `Country: ${highlighted.properties?.name}` : 'Click on a country to filter table.'}</span>
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
 
                 <ComposableMap
@@ -124,7 +129,7 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
                                     <Geography
                                         key={geography.rsmKey}
                                         geography={geography}
-                                        fill={geography.properties.name === highlighted.properties?.name ? colors.darkBlue : mapColor(geography.properties?.name)}
+                                        fill={mapColor(geography.properties?.name)}
                                         stroke={colors.white}
                                         strokeWidth={0.2}
                                         onClick={() => handleClick(geography)}
@@ -171,7 +176,7 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
 
 
             </div>
-            {!!highlighted.properties && <MigrationEventsTable migrationEvents={historyState?.migrations.filter(m => m.destName.value === highlighted.properties?.name || m.fromName.value === highlighted.properties?.name)} />}
+            <MigrationEventsTable migrationEvents={!!highlighted.properties ? historyState?.migrations.filter(m => m.destName.value === highlighted.properties?.name || m.fromName.value === highlighted.properties?.name) : historyState?.migrations} />
             {
                 historyState.migrations.length > 0 && (
                     <>
@@ -196,7 +201,6 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
                                             data: emigrantsPie
                                         },
                                     ]}
-                                    // width={500}
                                     height={300}
                                     slotProps={{
                                         legend: {
