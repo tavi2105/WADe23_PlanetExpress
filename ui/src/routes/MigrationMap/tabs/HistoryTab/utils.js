@@ -48,7 +48,6 @@ export const mapCountries = (migrationEvents) => {
 
 export const getCoordinates = (migrations, countryName) => {
     const migrationEvent = { ...migrations[0] }
-    // console.log("ev", migrationEvent)
     if (migrationEvent.fromName.value === countryName) {
         return [migrationEvent.fromName.fromLongitude.value, migrationEvent.fromName.fromLatitude.value]
     }
@@ -86,14 +85,11 @@ const getMyColor = () => {
 
 export const getBarChartData = (migrations, countryFilter) => {
     let barChart = chartDataHelper(migrations)
-    console.log(countryFilter)
     const filterIndex = barChart.findIndex(e => e.name === countryFilter)
-    console.log("???", filterIndex)
     if (filterIndex > -1) {
         barChart.splice(filterIndex, 1)
     }
     const reduced = barChart.sort(function (a, b) { return (b.immigrants + b.emigrants) - (a.immigrants + a.emigrants) }).slice(0, 10)
-    // console.log(barChart)
     const countryLabels = reduced.map(e => e.name)
     let immigrantsSeries = reduced.map(e => e.immigrants)
     let emigrantsSeries = reduced.map(e => e.emigrants)

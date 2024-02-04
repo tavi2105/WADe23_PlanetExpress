@@ -24,7 +24,6 @@ const LiveTab = () => {
     const [tooltipContent, setTooltipContent] = useState('')
     const [country, setCountry] = useState('None')
     const markerMapping = useMemo(() => { return mapMarkers(data, country) }, [data, country])
-    console.log("mapp", markerMapping)
 
     useEffect(() => {
         const controller = new AbortController();
@@ -50,7 +49,6 @@ const LiveTab = () => {
                 onmessage(event) {
                     const parsedData = JSON.parse(event.data);
                     setData(parsedData);
-                    console.log(parsedData)
                 },
                 onclose() {
                     controller.abort();

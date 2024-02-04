@@ -42,18 +42,19 @@ const Welcome = () => {
     const handleAddMigrationButtonClick = () => { navigate('/event') }
 
     return (
-        <ThemeProvider theme={darkTheme}>
-            <body
-                style={{
-                    backgroundImage: `url(${background})`,
-                    backgroundPosition: 'center',
-                    backgroundSize: 'cover',
-                    minWidth: '100vw',
-                    minHeight: '100vh',
-                    position: 'fixed'
-                }}
 
-            >
+        <body
+            style={{
+                backgroundImage: `url(${background})`,
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                minWidth: '100vw',
+                minHeight: '100vh',
+                position: 'fixed'
+            }}
+
+        >
+            <ThemeProvider theme={darkTheme}>
                 <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', padding: 20, display: 'flex', flex: 1, flexDirection: 'column', height: '100vh', justifyContent: 'center', alignItems: 'center' }}>
                     <h1 style={{ color: colors.white, fontSize: 50 }}>Migration Reporting Tool</h1>
                     <span style={{ color: colors.white, fontSize: 20 }}>Please select the migration category:</span>
@@ -96,10 +97,10 @@ const Welcome = () => {
                         Add migration event
                     </Button>
                 </div>
+            </ThemeProvider >
+        </body >
 
-            </body >
 
-        </ThemeProvider >
     );
 }
 

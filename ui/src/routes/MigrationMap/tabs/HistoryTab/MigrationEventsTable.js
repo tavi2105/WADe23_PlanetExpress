@@ -9,7 +9,7 @@ import { colors } from '../../../../constants';
 import { getType, getVocab } from './utils';
 
 const MigrationEventsTable = ({ migrationEvents }) => {
-   return migrationEvents.length > 0 && (
+   return migrationEvents.length > 0 ? (
       <TableContainer sx={{ maxHeight: 200, backgroundColor: 'rgba(255, 255, 255, 0.5)', marginTop: 5 }}>
          <Table size="small" aria-label="sticky table" stickyHeader>
             <TableHead >
@@ -71,7 +71,7 @@ const MigrationEventsTable = ({ migrationEvents }) => {
          </Table>
       </TableContainer>
 
-   )
+   ) : null
 
 }
 

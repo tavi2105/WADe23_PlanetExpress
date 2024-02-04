@@ -2,7 +2,6 @@ import { colors } from "../../../../constants"
 
 export const mapMarkers = (migrations, countryName) => {
     if (migrations.length === 0) {
-        console.log("cee")
         return []
     }
     let markerMapping;

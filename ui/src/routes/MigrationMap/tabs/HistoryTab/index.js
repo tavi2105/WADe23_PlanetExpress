@@ -25,7 +25,6 @@ import MigrationEventsTable from './MigrationEventsTable';
 const HistoryTab = ({ applyFilters, loading, error }) => {
 
     const [historyState,] = useHistoryContext()
-    // console.log("wtfff", historyState)
     const [countryFilter, setCountryFilter] = useState('Romania')
     const [ageFilter, setAgeFilter] = useState('All ages')
     const [sexFilter, setSexFilter] = useState('Men and women')
@@ -68,7 +67,6 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
 
     const { immigrantsPie, emigrantsPie } = useMemo(() => historyState.migrations.length > 0 && getPieChartData(historyState.migrations, countryFilter), [historyState])
 
-    console.log("filterrrr", countryFilter)
     const handleCountryChange = (event) => {
         const {
             target: { value },
@@ -93,6 +91,9 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
         } = event;
         setYearFilter(value);
     };
+    const renderTable = useCallback(() => (
+        <MigrationEventsTable migrationEvents={!!highlighted.properties ? historyState?.migrations.filter(m => m.destName.value === highlighted.properties?.name || m.fromName.value === highlighted.properties?.name) : historyState?.migrations} />
+    ), [highlighted, historyState])
 
     if (loading) {
         return (
@@ -176,7 +177,7 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
 
 
             </div>
-            <MigrationEventsTable migrationEvents={!!highlighted.properties ? historyState?.migrations.filter(m => m.destName.value === highlighted.properties?.name || m.fromName.value === highlighted.properties?.name) : historyState?.migrations} />
+            {renderTable()}
             {
                 historyState.migrations.length > 0 && (
                     <>

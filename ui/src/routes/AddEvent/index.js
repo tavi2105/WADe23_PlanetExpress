@@ -92,9 +92,9 @@ const AddEvent = () => {
 
 
     const success = () => {
-        axios.get("http://ip-api.com/json")
+        axios.get("https://ipapi.co/json/")
             .then(response => {
-                setDestCountry(response.data?.country);
+                setDestCountry(response.data?.country_name);
             })
             .catch(error => {
                 console.error(error);

@@ -39,7 +39,6 @@ const MigrationMap = () => {
     };
 
     const [historyState, setHistoryState] = useHistoryContext()
-    // console.log(historyState)
 
     const getMigrations = (country, age, gender, year) => {
         setLoading(true)
@@ -51,7 +50,6 @@ const MigrationMap = () => {
             })
             .then(response => {
                 setLoading(false)
-                console.log("response", response)
                 setHistoryState({ ...historyState, migrations: response.data })
             })
             .catch(error => {
@@ -74,7 +72,6 @@ const MigrationMap = () => {
         setLoading(true)
 
         axios.all(requests).then((responses) => {
-            console.log(responses)
             const state = {
                 migrations: responses[0].data,
                 filterCountries: responses[1].data.country,
