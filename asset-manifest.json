@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/tavi2105/WADe23_PlanetExpress/tree/main/ui/static/css/main.f855e6bc.css",
+    "main.js": "/tavi2105/WADe23_PlanetExpress/tree/main/ui/static/js/main.b8e4768e.js",
+    "static/js/787.1e83dcc9.chunk.js": "/tavi2105/WADe23_PlanetExpress/tree/main/ui/static/js/787.1e83dcc9.chunk.js",
+    "static/media/migration.jpg": "/tavi2105/WADe23_PlanetExpress/tree/main/ui/static/media/migration.b526041c72d4534716c3.jpg",
+    "index.html": "/tavi2105/WADe23_PlanetExpress/tree/main/ui/index.html",
+    "main.f855e6bc.css.map": "/tavi2105/WADe23_PlanetExpress/tree/main/ui/static/css/main.f855e6bc.css.map",
+    "main.b8e4768e.js.map": "/tavi2105/WADe23_PlanetExpress/tree/main/ui/static/js/main.b8e4768e.js.map",
+    "787.1e83dcc9.chunk.js.map": "/tavi2105/WADe23_PlanetExpress/tree/main/ui/static/js/787.1e83dcc9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f855e6bc.css",
+    "static/js/main.b8e4768e.js"
+  ]
+}
