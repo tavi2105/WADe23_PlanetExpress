@@ -20,6 +20,7 @@ import LiveCard from './LiveCard';
 const LiveTab = () => {
 
     const [historyState,] = useHistoryContext()
+    const [highlightedCountries, setHighlightedCountries] = useState([])
     const [data, setData] = useState([])
     const [tooltipContent, setTooltipContent] = useState('')
     const [country, setCountry] = useState('None')
@@ -79,7 +80,7 @@ const LiveTab = () => {
                     <div>
                         <div style={{ display: 'flex', flexDirection: 'column', overflowY: "scroll", paddingRight: 10, marginRight: 10, maxHeight: '100vh', width: '25vw' }}>
                             {
-                                data.map(m => <LiveCard migrationEvent={m} />)
+                                data.map(m => <LiveCard migrationEvent={m} onHover={setHighlightedCountries} />)
                             }
                         </div>
                     </div>
@@ -102,9 +103,9 @@ const LiveTab = () => {
                                         <Geography
                                             key={geography.rsmKey}
                                             geography={geography}
-                                            fill={colors.darkBlue}
-                                            stroke={colors.white}
-                                            strokeWidth={0.2}
+                                            fill={highlightedCountries?.findIndex((c) => c === geography.properties?.name) > -1 ? colors.turqoise : colors.darkBlue}
+                                            stroke={highlightedCountries?.findIndex((c) => c === geography.properties?.name) > -1 ? colors.darkRed : colors.white}
+                                            strokeWidth={0.3}
                                             style={{
                                                 hover: { outline: "none" },
                                                 pressed: { outline: "none" },

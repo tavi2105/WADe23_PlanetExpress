@@ -163,7 +163,7 @@ const AddEvent = () => {
                 </Alert>}
                 <h2 style={{ marginLeft: '1vw' }}>Add a new migration event</h2>
                 <div style={{ marginLeft: '1vw', display: 'flex', flexDirection: 'column' }}>
-                    <span >Add here data about a migration event you know. Note that the destination country will be automatically filled with your actual location.</span>
+                    <span >Add here data about a migration event you know. Note that the destination country will be automatically filled with your actual location. You can change it if needed.</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 100, flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
                     <div style={{

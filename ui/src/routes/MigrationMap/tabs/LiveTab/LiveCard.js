@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import LinearProgress, {
@@ -12,7 +12,6 @@ const StyledPaper = styled(Paper)(({ }) => ({
     textAlign: 'left',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: colors.darkBlue,
     color: colors.white
 }));
 
@@ -23,9 +22,18 @@ const StyledLinearProgressBar = styled(LinearProgress, {
     [`&.${linearProgressClasses.determinate}`]: { backgroundColor: 'rgba(255, 255, 255, 0.5)' }
 });
 
-const LiveCard = ({ migrationEvent }) => {
+const LiveCard = ({ migrationEvent, onHover }) => {
+    const [active, setActive] = useState(false)
+    const handleHover = () => {
+        setActive(true)
+        onHover([migrationEvent.origin, migrationEvent.destination])
+    }
+    const handleLeave = () => {
+        setActive(false)
+        onHover([])
+    }
     return (
-        <StyledPaper variant="elevation">
+        <StyledPaper variant="elevation" style={{ backgroundColor: active ? colors.turqoise : colors.darkBlue }} onMouseOver={handleHover} onMouseLeave={handleLeave}>
             <span>{`${migrationEvent.origin} ▶ ${migrationEvent.destination}`}</span>
             <span>{`${migrationEvent.numberOfPeople} ${migrationEvent.gender}`}</span>
             <span>{`Ages ${migrationEvent.age}`}</span>
