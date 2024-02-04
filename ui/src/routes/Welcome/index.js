@@ -56,12 +56,12 @@ const Welcome = () => {
         >
             <ThemeProvider theme={darkTheme}>
                 <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', padding: 20, display: 'flex', flex: 1, flexDirection: 'column', height: '100vh', justifyContent: 'center', alignItems: 'center' }}>
-                    <h1 style={{ color: colors.white, fontSize: 50 }}>Migration Reporting Tool</h1>
-                    <span style={{ color: colors.white, fontSize: 20 }}>Please select the migration category:</span>
+                    <h1 style={{ color: colors.white, fontSize: 50, textAlign: 'center' }}>Migration Reporting Tool</h1>
+                    <span style={{ color: colors.white, fontSize: 20, textAlign: 'center' }}>Please select the migration category:</span>
                     <Select
                         value={migrationCategory}
                         onChange={handleChange}
-                        sx={{ minWidth: '20em', marginTop: '1em' }}
+                        sx={{ minWidth: '24vw', marginTop: '1em' }}
                         MenuProps={MenuProps}
                         input={<BootstrapInput />}
                     >
@@ -79,7 +79,7 @@ const Welcome = () => {
                     </Select>
                     <Button variant="contained"
                         sx={{
-                            width: 200, minWidth: '40em', marginTop: '3em', backgroundColor: colors.darkBlue, color: colors.white, "&:hover": {
+                            width: 200, minWidth: '40vw', marginTop: '3em', backgroundColor: colors.darkBlue, color: colors.white, "&:hover": {
                                 backgroundColor: colors.darkGray
                             }
                         }}
@@ -88,7 +88,7 @@ const Welcome = () => {
                         View migration map
                     </Button>
                     <Button variant="outlined" sx={{
-                        width: 200, minWidth: '40em', marginTop: '3em', color: colors.white, borderColor: colors.white, "&:hover": {
+                        width: 200, minWidth: '40vw', marginTop: '3em', color: colors.white, borderColor: colors.white, "&:hover": {
                             borderColor: colors.white
                         }
                     }}

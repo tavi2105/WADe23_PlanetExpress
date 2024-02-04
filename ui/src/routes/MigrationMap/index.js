@@ -102,9 +102,9 @@ const MigrationMap = () => {
             overflowY: 'scroll',
 
         }}>
-            <div style={{ paddingBottom: '10vh' }}>
+            <div style={{ paddingBottom: '10vh', width: '100vw' }}>
                 <TabContext value={value}>
-                    <Box sx={{ backgroundColor: colors.darkGray, paddingTop: '1em', "& .MuiTabs-indicator": { display: "none" } }}>
+                    <Box sx={{ backgroundColor: colors.darkGray, paddingTop: '1em', width: '100vw', "& .MuiTabs-indicator": { display: "none" } }}>
                         <TabList onChange={handleChange} aria-label="lab API tabs example">
                             <StyledTab label="History" value="1" />
 
