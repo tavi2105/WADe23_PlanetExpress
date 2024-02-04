@@ -5,7 +5,7 @@ import { colors } from '../../../../constants'
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     '& .MuiInputBase-input': {
-        backgroundColor: colors.white,
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
         border: '1px solid',
         borderRadius: 4,
         borderColor: colors.darkBlue,
