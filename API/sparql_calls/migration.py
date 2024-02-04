@@ -5,7 +5,7 @@ DEFAULT_YEAR = "\"All years\""
 DEFAULT_GENDER = "\"Men and women\""
 DEFAULT_COUNTRY = "\"Romania\""
 
-sparql = SPARQLWrapper("http://localhost:3030/MiRMigrations/sparql")
+sparql = SPARQLWrapper("http://localhost:3030/MiR/sparql")
 
 
 def format_output(item):

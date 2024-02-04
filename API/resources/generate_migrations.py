@@ -79,7 +79,7 @@ def update_live_migrations():
 
 
 def get_live_migrations():
-    print("get_live_migrations: new wave")
+    # print("get_live_migrations: new wave")
     update_live_migrations()
     fill_empty_migrations()
 

@@ -1,8 +1,9 @@
 from datetime import datetime
+import time
 
 from SPARQLWrapper import SPARQLWrapper
 
-sparql = SPARQLWrapper("http://localhost:3030/MiRMigrations/update")
+sparql = SPARQLWrapper("http://localhost:3030/MiR/update")
 
 
 def __query_add_sparql(sparql_query_string):
@@ -10,6 +11,7 @@ def __query_add_sparql(sparql_query_string):
         sparql.setQuery(sparql_query_string)
         sparql.method = 'POST'
         results = sparql.query()
+        # print(results)
         if results:
             return results
         else:
@@ -20,12 +22,14 @@ def __query_add_sparql(sparql_query_string):
 
 
 def create_query(dest, origin, age, gender, year, value):
-    event = dest + '-' + origin + '-' + gender + '-' + age + '-' + year
+
+    event = dest + '-' + origin + '-' + gender + '-' + age + '-' + str(int(time.mktime(datetime.now().timetuple())))
     event = event.replace(" ", "_")
     dest = str(dest).replace(" ", "_")
     dest = str(dest).replace(".", "")
     origin = str(origin).replace(" ", "_")
     origin = str(origin).replace(".", "")
+    event_name = dest + '-' + origin
 
     print(event)
     query_string = f'''
@@ -33,7 +37,7 @@ def create_query(dest, origin, age, gender, year, value):
         PREFIX schema: <https://schema.org/>
         PREFIX dbr: <https://dbpedia.org/resource/>
         PREFIX int: <http://www.w3.org/2001/XMLSchema#int>
-        INSERT {{ <urn:{event}> schema:TravelAction "{event}" . }} WHERE {{}};
+        INSERT {{ <urn:{event}> schema:TravelAction "{event_name}" . }} WHERE {{}};
         INSERT {{ <urn:{event}> foaf:age "{age}"@en . }} WHERE {{}};
         INSERT {{ <urn:{event}> foaf:gender "{gender}"@en . }} WHERE {{}};
         INSERT {{ <urn:{event}> schema:DateTime "{year}"@en . }} WHERE {{}};

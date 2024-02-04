@@ -17,5 +17,5 @@ def get_migrations():
                                              age,
                                              gender,
                                              body["year"],
-                                             body["value"])).response.getCode()
+                                             body["value"])).response.getcode()
     return Response("Response", mimetype="application/json", status=status)
