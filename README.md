@@ -6,6 +6,11 @@
 ### :notebook_with_decorative_cover: Table of Contents
 - [Team members](#team-members)
 - [Documentation](#documentation)
+- [Application Links](#application-links)
+- [Tech Stack](#tech-stack)
+- [Contribution](#contribution)
+- [Main Features](#main-features)
+- [Color Reference](#color-reference)
 
 ### :running_shirt_with_sash: Team members:
 <ul>
@@ -18,7 +23,15 @@ Scholarly link: https://tavi2105.github.io/WADe23_PlanetExpress/scholarly-html/i
 
 OpenAPI link: https://app.swaggerhub.com/apis-docs/tavi2105/MIR_PlanetExpress/1.0.0
 
-### :space_invader: Tech Stack
+Demo video: https://youtu.be/VdWQgGD8esQ
+
+### :bow_and_arrow: Application Links
+
+Hosted FrontEnd: https://wa-de23-planet-express.vercel.app/
+
+** Note: the BackEnd is hosted using a local server, the application calls will fail if the server is close
+
+### :space_invader: Tech Stack:
 
 <ul>
   <li>FronEnd</li>
@@ -40,7 +53,7 @@ OpenAPI link: https://app.swaggerhub.com/apis-docs/tavi2105/MIR_PlanetExpress/1.
   </ul>
 </ul>
 
-### :spiral_notepad: Contribution
+### :spiral_notepad: Contribution:
 | Component           | Ioana Maniga  | Octavian Ungureanu            
 | ------------------- | ------------- | ------------------ | 
 | FrontEnd            |  85%          | 15%                |
@@ -48,13 +61,13 @@ OpenAPI link: https://app.swaggerhub.com/apis-docs/tavi2105/MIR_PlanetExpress/1.
 | RDF Modeling        |  30%          | 70%                |
 | Documentation       |  60%          | 40%                |
 
-### :dart: Features
+### :dart: Main Features:
 
 - Migration History
 - Live Migration
 - Add migration
 
-### :art: Color Reference
+### :art: Color Reference:
 
 | Color             | Hex                                                                | Color             | Hex                                                                |
 | ----------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------------------------------------------ |
