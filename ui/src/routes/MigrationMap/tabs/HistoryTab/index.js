@@ -193,13 +193,13 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
                             />
                         </div>
 
-                        {emigrantsPie.length > 1 &&
+                        {immigrantsPie.length > 1 &&
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '98%', alignContent: 'flex-start', marginTop: '2vw', paddingLeft: '2vw' }}>
                                 <span style={{ display: 'flex', fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Emigrants number to each country</span>
                                 <PieChart
                                     series={[
                                         {
-                                            data: emigrantsPie
+                                            data: immigrantsPie
                                         },
                                     ]}
                                     height={300}
@@ -215,13 +215,13 @@ const HistoryTab = ({ applyFilters, loading, error }) => {
                                 />
                             </div>
                         }
-                        {immigrantsPie.length > 1 &&
+                        {emigrantsPie.length > 1 &&
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '98%', alignContent: 'flex-start', marginTop: '2vw', paddingLeft: '2vw' }}>
                                 <span style={{ display: 'flex', fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Immigrants number from each country</span>
                                 <PieChart
                                     series={[
                                         {
-                                            data: immigrantsPie
+                                            data: emigrantsPie
                                         },
                                     ]}
 
