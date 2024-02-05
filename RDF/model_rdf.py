@@ -30,17 +30,17 @@ for row in csv_contents:
     sex = Literal(row['Sex'], lang='en')
     year = Literal(row['Year'], lang='en')
 
-    graph.add((migration, URIRef(schema + "Event"), name))
+    graph.add((migration, URIRef(schema + "TravelAction"), name))
     graph.add((migration, FOAF.age, age))
     graph.add((migration, FOAF.gender, sex))
     graph.add((migration, URIRef(schema + "DateTime"), year))
     graph.add((migration, URIRef(schema + "Number"), value))
 
-    graph.add((migration, URIRef(schema + "tripOrigin"), country))
+    graph.add((migration, URIRef(schema + "fromLocation"), country))
     # graph.add((country, FOAF.name, country_name))
     # graph.add((country, URIRef(schema + "addressCountry"), country_name_code))
 
-    graph.add((migration, URIRef(schema + "Country"), country_dest))
+    graph.add((migration, URIRef(schema + "toLocation"), country_dest))
     # graph.add((country_dest, FOAF.name, country_dest_name))
     # graph.add((country_dest, URIRef(schema + "addressCountry"), country_dest_name_code))
 
