@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build-js": "browserify js/scholarly.js | uglifyjs - -c warnings=false -m > js/scholarly.min.js",
+    "minify-css": "browserify css/scholarly.css | uglifyjs - -c warnings=false -m > css/scholarly.min.css",
     "watch-js": "watchify js/scholarly.js --verbose --ignore-watch=\"js/scholarly.min.js\" -o 'uglifyjs - -c warnings=false -m > js/scholarly.min.js'",
     "build-css": "postcss --config ./cssnow.json css/scholarly.css",
     "watch-css": "postcss --watch --config ./cssnow.json css/scholarly.css",

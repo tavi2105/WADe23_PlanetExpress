@@ -3,7 +3,7 @@ import sa from '@scienceai/scholarly-article';
 import refs from './refs';
 
 let curID = 0;
-function makeID (el) {
+function makeID(el) {
   if (!el.id) {
     curID++;
     el.id = `id${curID}`;
@@ -11,13 +11,13 @@ function makeID (el) {
   return el.id;
 }
 
-function detoc () {
+function detoc() {
   Array.from(document.querySelectorAll('section'))
     .forEach($sec => {
       let level = depth($sec)
         , $h = $sec.firstElementChild
         , name = `h${(level > 6) ? 6 : level}`
-      ;
+        ;
       if ($h.localName !== name) {
         let $newH = document.createElement(name);
         while ($h.hasChildNodes()) $newH.appendChild($h.firstChild);
@@ -29,33 +29,33 @@ function detoc () {
       }
       if (level > 6) $h.setAttribute('aria-level', level);
     })
-  ;
+    ;
   let $ol = makeTOCAtLevel(document.body, [0])
     , $ci = document.querySelector('div[role="contentinfo"]')
-  ;
+    ;
   $ci.insertBefore($ol, $ci.firstChild);
 }
-function depth ($sec) {
+function depth($sec) {
   let len = 2
     , $cur = $sec.parentNode
-  ;
+    ;
   while ($cur) {
     if ($cur.localName === 'section') len++;
     $cur = $cur.parentNode;
   }
   return len;
 }
-function children ($parent, name) {
+function children($parent, name) {
   let res = []
     , $cur = $parent.firstElementChild
-  ;
+    ;
   while ($cur) {
     if ($cur.localName === name) res.push($cur);
     $cur = $cur.nextElementSibling;
   }
   return res;
 }
-function makeTOCAtLevel ($parent, current) {
+function makeTOCAtLevel($parent, current) {
   let $secs = children($parent, 'section');
   if ($secs.length === 0) return null;
   let $ol = document.createElement('ol');
@@ -92,10 +92,10 @@ function makeTOCAtLevel ($parent, current) {
   return $ol;
 }
 
-function deref () {
+function deref() {
   let $dl = document.createElement('dl')
     , seen = {}
-  ;
+    ;
   // we have a builtin list (for now)
   Array.from(document.querySelectorAll('a[role="doc-biblioref"]'))
     .forEach($ref => {
@@ -112,10 +112,10 @@ function deref () {
       $div.innerHTML = refs[key];
       $dl.appendChild($div.firstElementChild);
     })
-  ;
+    ;
   let $section = document.createElement('section')
     , $h2 = document.createElement('h2')
-  ;
+    ;
   $section.id = 'biblio-references';
   $h2.textContent = 'References';
   $section.appendChild($h2);
@@ -124,7 +124,7 @@ function deref () {
 }
 
 // XXX
-function defigure () {
+function defigure() {
   // use the typeof to inject schema:name (with counter)
   // maybe load up PrismJS too?
 }
@@ -133,9 +133,9 @@ function defigure () {
 // Creates a link and adds the style.
 let ontomap = {
   schema: 'http://schema.org/',
-  sa:     'http://ns.science.ai/#',
+  sa: 'http://ns.science.ai/#',
 };
-function deontology () {
+function deontology() {
   Array.from(document.querySelectorAll('a:not([href])'))
     .forEach($a => {
       let parts = $a.textContent.split(':');
@@ -145,11 +145,11 @@ function deontology () {
       $a.setAttribute('href', `${base}${parts[1]}`);
       $a.setAttribute('class', 'onto');
     })
-  ;
+    ;
 }
 
-function despec () {
-  deref();
+function despec() {
+  // deref();
   detoc();
   defigure();
   deontology();

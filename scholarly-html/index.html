@@ -5,35 +5,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Migration Reporting Tool (MIR)</title>
-  <link rel="stylesheet" href="css/scholarly.min.css">
+  <link rel="stylesheet" href="css/scholarly.css">
   <script src="js/scholarly.min.js"></script>
 </head>
 
 <body prefix="schema: http://schema.org">
   <header>
     <div class="banner">
-      <img src="world_map.png" width="400" height="50" alt="world-map">
+      <img src="img/world_map.png" width="400" height="50" alt="world-map">
     </div>
     <h1>Migration Reporting Tool</h1>
     <h2>Technical Report</h2>
   </header>
-  <!--
-      XXX
-      - check refs
-      - the math example has too much maths
-      - bring back some of the old style
-      - make semantics, validation, processing sub-sections of each structural element
-      - have a section before that for general constructs
-        - explain why use RDFa
-        - explain our patterns: RDFa, roles
-      - figure captions need to get set throughout
-      - dedication? see doc-dedication
-      - syntactic constraints (prefix)
-      - needs more sthenurines
-      - examples of everything
-      - some notes on using Semantic CSS
-      - needs more RDFa in the spec itself
-    -->
   <div role="contentinfo">
     <dl>
       <dt>Authors</dt>
@@ -48,16 +31,15 @@
     <h2>Abstract</h2>
     <p>
       This is a technical report which presents information about the APIs that are going to serve the MIR
-      application
-      and about the structures of data that we use.
+      application, about the structures of data that we use and about the overall implementation of the project.
     </p>
   </section>
   <section id="introduction" role="doc-introduction">
-    <!-- review? -->
     <h2>Introduction</h2>
     <p>
       Migration Reporting Tool is a <b>Web system</b> that is capable to generate in real-time an interactive map
-      regarding the migrations performed by humans or birds in a specific context. The application will also deliver
+      regarding the migrations performed by humans (with the possibility of extending with data about other species) in
+      a specific context. The application will also deliver
       useful statistics and visualizations about the migratory habits of specific species and all this information
       will
       be offered by a <b>SPARQL endpoint</b> (also enhanced by additional knowledge provided by DBpedia / Wikidata).
@@ -71,9 +53,10 @@
       Details about development:
     <ul>
       <li>For frontend we will use React - a javascript library</li>
-      <li>The backend will be developed using Python with Django framework</li>
-      <li>For the database our choice is MongoDB</li>
-      <li>Data about migration events will be modeled and accessed using RDF, RDF Schema, SPARQL.</li>
+      <li>The backend will be developed using Python with Flask framework</li>
+      <li>For the database our choice is Apache Jena Fuseki TripleStore</li>
+      <li>Data about migration events is processed and modeled using RDF (rdflib library from python) and accessed using
+        SPARQL endpoint provided by Apache Jena.</li>
     </ul>
     </p>
   </section>
@@ -82,12 +65,14 @@
     <section id="overview">
       <h3>Overview</h3>
       <p>
-        The applincation will let user select what he wants to search: migration map, visuals and statistics for
-        humans or for birds?
+        The applincation lets the user explore migration map, visuals and statistics for humans (for now). It is also
+        extensible for data about other species. The choice of species cand be made by the user among available species
+        at the time.
       </p>
       <p>
         Once the user makes a choice, he will be able to visualize data about migrations in two sections: live and
-        history. For the both sections there are some filters that can be applied and also statistics and charts are
+        history. For the both sections there are some filters that can be applied. For the history tab there are also
+        statistics and charts are
         available for the data requested.
       </p>
       <p>
@@ -100,54 +85,150 @@
       <section id="c-01">
         <h3>MIR Web Site</h3>
         <h4>UI Interface</h4>
-        <p><b>Note:</b>The followin detials are not necessarily final decisions and might end up different in the final
-          implementation.</p>
+        <p>Our Front End is developed using <a href="https://legacy.reactjs.org/">React</a>, a JavaScript
+          library for building interfaces, powered by Meta Platforms, Inc. The main libraries that we used are:
+        <ul>
+          <li>
+            <a href="https://mui.com/">(MUI) - Material UI</a> for most of the components
+          </li>
+          <li>
+            <a href="https://www.react-simple-maps.io/">React Simple Maps</a> for rendering the maps
+          </li>
+          <li>
+            <a href="https://axios-http.com/docs/intro">Axios</a> for API calls
+          </li>
+        </ul>
+        </p>
         <p>
           On the first page that users see, there will be the following components:
         <ul>
-          <li>A welcome message</li>
+          <li>The title of the application</li>
           <li>A dropdown that they can use to select the species for which they want to see migration events</li>
           <li>A button that will navigate to the page with the map</li>
           <li>A button that will redirect the users to a page where they can add their own data.</li>
         </ul>
+        <img src="img/welcome_page.png" alt="Welcome page image" class="presentation-image">
         </p>
         <p>
-          Another page will be the one with the map, with the following features:
+          Another page is the one where user can explore migration map. It has two tabs:
         <ul>
-          <li>There will be two tabs - Live and History</li>
-          <li>On each there will be a map showing details about migration</li>
-          <li>Next to the map there will be filters regarding age o migrants, year of migration, detination, occupation
-            etc</li>
-          <li>There will also be charts and statisticts regarding the data, and those will be updated based on
-            filtering.</li>
+          <li>
+            History
+            <ul>
+              <li>Displays an interactive map where migration events can be visualised</li>
+              <li>Next to the map, there are some filters regarding the country to be focused, age/sex of
+                migrants, year of migration</li>
+              <li>Under the map, there is a table which displays all migration events according to the filters</li>
+              <li>There are also charts with statistics regarding origin/destination country and number of migrants.
+              </li>
+            </ul>
+            <img src="img/history_map_1.png" alt="History tab image - first part - map and filters"
+              class="presentation-image">
+            <img src="img/history_map_2.png" alt="History tab image - second part - table and charts"
+              class="presentation-image">
+            <img src="img/history_map_3.png" alt="History tab image - third part - charts" class="presentation-image">
+          </li>
+          <li>Live
+            <ul>
+              <li>Displays an interactive map where live migration events can be observed</li>
+              <li>Above the map there is a dropdown select where user can select a country to be focused</li>
+              <li>Next to the map, there are displayed cards with details about every migration event that is pending at
+                the time.</li>
+            </ul>
+            <img src="img/live_map.png" alt="Live tab image" class="presentation-image">
+          </li>
         </ul>
         </p>
         <p>
-          The page where user can add data will be composed of:
+          The page where user can add data is composed of:
         <ul>
-          <li>A form with details that he has to fill</li>
-          <li>A submit button</li>
+          <li>A form with details that he has to fill - the user is asked for location permision and if it's allowed,
+            the destination country is automatically set on current contry and can be changed after</li>
+          <li>A submit button.</li>
         </ul>
+        <img src="img/add_event.png" alt="Add event page image" class="presentation-image">
         </p>
       </section>
       <section id="c-02">
         <h3>MIR Rest API</h3>
         <p>
-          The API provided by the server is used in general for performing GET operations in order to retrieve the
-          data for generating the map and statistics. However, since the user can also add some data about migrations
-          there are also POST operations available. Complete details about these can be found in our OpenAPI
-          specification.
+          In this project our API implemented in Flask (Python based) it is a layer between our FrontEnd and the Apache
+          Jena
+          Fuseki TripleStore. The API provided by the server is used in general for performing GET operations in order
+          to retrieve
+          the data for generating the map and statistics. However, since the user can also add some data about
+          migrations there
+          are also POST operations available. Complete details about these can be found in <a
+            href="https://app.swaggerhub.com/apis-docs/tavi2105/MIR_PlanetExpress/1.0.0">our OpenAPI specification.</a>
+        </p>
+        <p>
+          However, the API performs three main operations:
+        <ul>
+          <li>for GET migrations history and filters calls, the API makes a SELECT query over the SPARQL Endpoint to get
+            the filtered
+            data</li>
+          <li>for POST migration, the API makes a INSERT query over the SPQRQL Endpoint in order to add new migration
+            event to the
+            TripleStore</li>
+          <li>for GET live migration, the API calls our intern migration generator (which generates random migrations).
+            The
+            endpoint is SSE based (Server-sent events) continually providing migration events every 7 seconds. The
+            generator is
+            updating the migrations each iteration. After a migration ends (gots 100% progress), it will be inserted
+            also in the
+            TripleStore through the SPQRQL Endpoint.</li>
+        </ul>
         </p>
       </section>
       <section id="c-02">
-        <h3>MIR Database</h3>
+        <h3>MIR Datasets and models</h3>
         <p>
-          We store the dataset provided by OECD API in our database. This dataset is based on filters (like years,
-          countries,
-          etc), so our database is stuctured in the same way. In addition, in this database we'll have a another dataset
-          stored,
-          this time for birds migration.
+          We store the dataset provided by OECD API. This dataset is based on filters (like years, countries, etc), so
+          our
+          database is stuctured in the same way. We processed it and changed it to fill up our requirements. After that
+          we modeled
+          it using RDF (rdflib library from python) in order to create our ontology. We stored this as a RDF/Turtle
+          file, which
+          was loaded into Apache Jena Fuseki TripleStore.
         </p>
+        <p>
+          The description of our models:
+        </p>
+        <img src="img/Model_countries.png" alt="Description of model for country" class="presentation-image">
+        <img src="img/Model_migration.png" alt="Description of model for migration" class="presentation-image">
+        <p>
+          Each country has its own node containing the name of the coutnry and the coordinates. The migration model is
+          linked with
+          each destination and origin countries models. As vocabularies we used <a
+            href=" https://schema.org/">schema.org</a> and <a href="http://xmlns.com/foaf/0.1/">FOAF</a>. We also used
+          <a href="https://dbpedia.org/">DBpedia</a>
+          resources as URIs for each country.
+        </p>
+        <p>Our dataset contains 536568 migration events. We created this graph using just 10000 migration events:</p>
+        <img src="img/Big_graph_10000.png" alt="Graph with 10000 migration events" class="presentation-image">
+        <p>Let's simply it by using just 10 migration events. We can see a lot of contries with no conections.</p>
+        <img src="img/Graph_10_migration.png" alt="Graph with 10 migration events" class="presentation-image">
+        <p>Now, let's take a look at one migration event. The migration model is linked with the each contry's model.
+        </p>
+        <img src="img/Simple_migration_graph_details.png" alt="Graph with one migration event"
+          class="presentation-image">
+      </section>
+      <section id="c-04">
+        <h3>SPARQL queries</h3>
+        <p><b>SELECT migrations:</b></p>
+        <img src="img/SELECT_query.png" alt="Select migrations query" class="presentation-image">
+        <p>As you can see, in our API, this query contains some parameters, such as age, gender and country, these
+          parameters are
+          default setted to "All ages", "Men and women" and "All years". The year filter is added just if the call from
+          the
+          FrontEnd contains this filter. This query is this big because we wanted to return all details about each data.
+          We tried
+          different versions and we picked the fastest one.</p>
+        <p><b>INSERT migration:</b></p>
+        <img src="img/INSERT_query.png" alt="Insert migration query" class="presentation-image">
+        <p>This query contains an "INSERT" for every triple that needs to be added for one migration.</p>
+        <p>We also have a SPARQL call for <b>selecting filter values:</b></p>
+        <img src="img/SELECT_query_filter.png" alt="Select filter values" class="presentation-image">
       </section>
     </section>
     <section id="external-api">
@@ -166,6 +247,110 @@
       </p>
     </section>
   </section>
+  <section id="user-guide">
+    <h2>User Guide</h2>
+    <p>In these section we will present the three main flows that a user can complete in our web application.</p>
+    <section id="migration-history-map">
+      <h2>Migration History Map</h2>
+      <p>You can acces this page by clicking the "VIEW MIGRATION MAP" button from the main page.
+        This is the page where you can explore details about migration events among years and between different
+        countries. The migrations that are displayed are automatically filtered by a country (marked with a pin on
+        map), and there are also
+        addition filters that can be applied: number of migrants, year of migration, age of migrants, sex of
+        migrants.</p>
+      <p>The default country filter is Romania.The legend explains what the colors that you can see on the map
+        mean.</p>
+      <p>To apply filters, you have to select your options from the dropdowns and click the "APPLY FILTERS" button.
+        Example of filtering:</p>
+      <img src="img/history_map_guide_1.png" alt="History tab - map with different filters applied"
+        class="presentation-image">
+      <p>Under the map you can see a table which contains all migration events that atch yor filtering.</p>
+      <img src="img/history_map_guide_2.png" alt="History tab - table without the second country filter applied"
+        class="presentation-image">
+      <p>The map is interactive, meaning that you can click on a country to see it's name and also to add one more
+        filter yo the table.</p>
+      <p>When you select a country, it's name will be displayed and it will be colored with dark blue on the map.</p>
+      <p>Example on the previous filter selection and United States of America highlighted on the map:</p>
+      <img src="img/history_map_guide_3.png"
+        alt="History tab - map with highlighted country and different filters applied" class="presentation-image">
+      <img src="img/history_map_guide_4.png" alt="History tab - table with the second country filter applied"
+        class="presentation-image">
+      <p>You can also analyse two different types of charts: a bar chart and one or two piecharts.</p>
+      <p>The barchart is plotted on a top 10 by total number of individuals that migrated between two countries on
+        filtered data. It shows for each of these countries the number if immigrants and the number of emigrants
+        reported to the selected country.</p>
+      <img src="img/history_map_guide_5.png" alt="Barchart" class="presentation-image">
+      <p>There are two available piecharts: one that shows you the proportions between the number of immigrants from
+        each country and one that shows you proportions between the number of emigrants to each country. This is why
+        in some cases there
+        might not be two of them: if, for example, there are no countries for which we have emigrants, there will be
+        no chart about this.</p>
+      <p>The colors of the pie charts are randomly generated.</p>
+      <img src="img/history_map_guide_6.png" alt="Piecharts" class="presentation-image">
+    </section>
+    <section id="migration-live-map">
+      <h2>Migration live map</h2>
+      <p>Here you can see an interactive map showing the migration events that are happening at the time you are
+        watching the map. Each marker position is updated in real time. You can hover any marker on the map and see
+        details about that specific event. The markers disappear once the migration is completed.</p>
+      <p>Next to the map you can see a list of cards that display details about each pending migration event, together
+        with the progress percentage that is also updated in real time.</p>
+      <img src="img/live_map_guide_1.png" alt="Live map - hovered marker" class="presentation-image">
+      <p>You can hover one of the cards from the list and it will become highlighted. This will also highlight the
+        corresponding countries on the map with the same color.</p>
+      <img src="img/live_map_guide_2.png" alt="Live map - hovered card" class="presentation-image">
+      <p>Above the map you will se a dropdown with country names. This allows you to filter the live events that you see
+        on the map on a country. Nothe that is's possible that at the time you are watching, for a specific country
+        there are no migration events.</p>
+      <p>There is a color code here. If the marker is green, it means that individuals are migrating TO the selected
+        country. If the marker is red, it means that the individuals are migrating FROM the selected country.</p>
+      <img src="img/live_map_guide_3.png" alt="Live map - filtered by country" class="presentation-image">
+    </section>
+    <section id="add-event-page">
+      <h2>Add migration event</h2>
+      <p>On this page you are able to add a new migration event. Assuming that you will probably want to enter a
+        migration event you were part of, the application will request permision to your location and automatically fill
+        the destination field with the name of the country you are in. This can be changed if it's not the case.</p>
+      <img src="img/add_event_guide_1.png" alt="Add event - request location permision" class="presentation-image">
+      <p>You will not be allowed to add an event without introducing all mandatory fields that are marqued with *. If
+        you try, a warning message will be displayed.</p>
+      <img src="img/add_event_guide_2.png" alt="Add event - warning message, form not filled"
+        class="presentation-image">
+      <p>If everything is filled and you click "ADD EVENT" a request will be made. If it's successful you will see a
+        success message and this means the action was performed.</p>
+      <img src="img/add_event_guide_3.png" alt="Add event - success message, for filled" class="presentation-image">
+      <p>If any error happens, you will see an error message.</p>
+      <img src="img/add_event_guide_4.png" alt="Add event - error message, for filled" class="presentation-image">
+    </section>
+  </section>
+  <section id="future-work">
+    <h2>Future work</h2>
+    <p>As future work, this application can be extendend for exploring migration events for different catregories of
+      individuals. For now we only use data for human beings, but it will be very useful to give the user multiple
+      possibilities. Considering the fact that our initial goal was to also use data for birds, this can be added as
+      well as other species.</p>
+  </section>
+  <section id="references">
+    <h2>References</h2>
+    <ul>
+      <li><a href="https://bigboxcode.com/flask-server-sent-events-sse">Tutorial SSE Flask</a></li>
+      <li><a href="https://github.com/KRontheWeb/csv2rdf-tutorial/blob/master/CSV2RDF-tutorial.ipynb">Tutorial csv to
+          rdf with
+          rdflib (Python)</a></li>
+      <li><a
+          href="https://nivedithakarmegam.wordpress.com/2019/03/07/how-to-create-and-query-a-sparql-endpoint/">Tutorial
+          Apache Jena Fuseki + SPARQLWrapper</a></li>
+      <li><a href="https://brickschema.github.io/brick-studio/">Graph visualization tool</a></li>
+      <li><a href="https://jena.apache.org/documentation/fuseki2/">Apache Jena Fuseki</a></li>
+      <li><a href="https://ngrok.com/">Ngrok - Hosting tool - BackEnd</a></li>
+      <li><a href="https://vercel.com/">Vercel - Hosting tool - FrontEnd</a></li>
+      <li><a href="https://blog.logrocket.com/using-fetch-event-source-server-sent-events-react/">React Fetch Event
+          Source tutorial</a></li>
+      <li><a href="https://mui.com/material-ui/getting-started/">Material UI guidelines</a></li>
+      <li><a href="https://www.react-simple-maps.io/examples/">React simple maps guidelines</a></li>
+    </ul>
+  </section>
+
 </body>
 
 </html>
