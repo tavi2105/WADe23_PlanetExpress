@@ -42,8 +42,8 @@ def create_query(dest, origin, age, gender, year, value):
         INSERT {{ <urn:{event}> foaf:gender "{gender}"@en . }} WHERE {{}};
         INSERT {{ <urn:{event}> schema:DateTime "{year}"@en . }} WHERE {{}};
         INSERT {{ <urn:{event}> schema:Number "{value}"^^int: . }} WHERE {{}};
-        INSERT {{ <urn:{event}> schema:fromLocation dbr:{dest} . }} WHERE {{}};
-        INSERT {{ <urn:{event}> schema:toLocation dbr:{origin} . }} WHERE {{}};
+        INSERT {{ <urn:{event}> schema:fromLocation dbr:{origin} . }} WHERE {{}};
+        INSERT {{ <urn:{event}> schema:toLocation dbr:{dest} . }} WHERE {{}};
         '''
 
     return query_string
